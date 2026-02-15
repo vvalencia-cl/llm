@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+
+namespace LMM;
 
 public static class HeaderFieldMapper
 {
@@ -152,10 +151,10 @@ public static class HeaderFieldMapper
     }
 
     private static bool TryResolve(
-    Dictionary<string, List<string>> lookup,
-    string normalizedField,
-    string originalTemplateField,
-    out string excelHeader)
+        Dictionary<string, List<string>> lookup,
+        string normalizedField,
+        string originalTemplateField,
+        out string excelHeader)
     {
         excelHeader = "";
 

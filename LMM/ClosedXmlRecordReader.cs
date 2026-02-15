@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
+
+namespace LMM;
 
 public static class ClosedXmlRecordReader
 {

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
+
+namespace LMM;
 
 public static class ClosedXmlExcelLoader
 {
@@ -16,4 +16,5 @@ public static class ClosedXmlExcelLoader
             WorksheetNames: sheetNames,
             DefaultWorksheetName: sheetNames[0]);
     }
+    
 }

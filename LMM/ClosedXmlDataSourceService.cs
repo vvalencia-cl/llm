@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
+
+namespace LMM;
 
 public sealed class ClosedXmlDataSourceService : IDisposable
 {
@@ -162,13 +161,13 @@ public sealed class ClosedXmlDataSourceService : IDisposable
     }
 
     public bool TryReadHeaders(
-    string worksheetName,
-    int headerRowNumber,
-    out ExcelHeaderResult? headerResult,
-    out string userMessage,
-    bool trimHeaders = true,
-    bool errorOnEmptyHeader = true,
-    bool errorOnDuplicateHeader = true)
+        string worksheetName,
+        int headerRowNumber,
+        out ExcelHeaderResult? headerResult,
+        out string userMessage,
+        bool trimHeaders = true,
+        bool errorOnEmptyHeader = true,
+        bool errorOnDuplicateHeader = true)
     {
         headerResult = null;
         userMessage = "";
@@ -290,11 +289,11 @@ public sealed class ClosedXmlDataSourceService : IDisposable
     }
 
     public IEnumerable<(int RowNumber, Dictionary<string, string> Record)> EnumerateRecordsFormattedWithRowNumber(
-    string worksheetName,
-    int headerRowNumber,
-    IReadOnlyList<string> headers,
-    bool trimFormattedValues = false,
-    bool skipFullyEmptyRows = false)
+        string worksheetName,
+        int headerRowNumber,
+        IReadOnlyList<string> headers,
+        bool trimFormattedValues = false,
+        bool skipFullyEmptyRows = false)
     {
         ThrowIfDisposed();
 
