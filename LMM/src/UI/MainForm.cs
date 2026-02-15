@@ -48,6 +48,9 @@ public sealed class MainForm : Form
         Height = 720;
         StartPosition = FormStartPosition.CenterScreen;
 
+        // Scale layout based on DPI (helps consistency at 150%)
+        AutoScaleMode = AutoScaleMode.Dpi;
+
         BuildUi();
         WireEvents();
         UpdateUiEnabledState();
@@ -81,6 +84,7 @@ public sealed class MainForm : Form
         {
             Dock = DockStyle.Top,
             AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
             ColumnCount = 4,
             RowCount = 10,
         };
@@ -102,10 +106,10 @@ public sealed class MainForm : Form
         // Excel
         txtExcelPath = new TextBox { PlaceholderText = "Seleccione el origen de datos Excel (.xlsx)..." };
         btnBrowseExcel = new Button { Text = "Buscar..." };
-        
+
         AddRow("Archivo Excel", txtExcelPath, btnBrowseExcel, btnLoadExcel);
-        
-        btnLoadExcel = new Button { Text = "Analizar Excel"  };
+
+        btnLoadExcel = new Button { Text = "Analizar Excel" };
         AddRow("Analizar", btnLoadExcel);
 
         // Worksheet + header row
@@ -122,8 +126,8 @@ public sealed class MainForm : Form
 
         AddRow2("Hoja de planilla con datos", wsPanel, "Nº Fila con encabezados", numHeaderRow);
 
-        AddRow("Acciones", btnRefreshHeaders);
-        
+        AddRow("Acciones Excel", btnRefreshHeaders);
+
         cmbFirstField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         cmbSecondField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         cmbThirdField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
@@ -148,11 +152,24 @@ public sealed class MainForm : Form
         AddRow("Carpeta de salida", txtOutputDir, btnBrowseOutputDir);
 
         // Actions row
-        btnScanTemplateFields = new Button { Text = "Escanear campos plantilla" };
+        btnScanTemplateFields = new Button { Text = "Validar campos plantilla"};
         btnRun = new Button { Text = "Ejecutar combinación" };
         btnCancel = new Button { Text = "Cancelar", Enabled = false };
 
-        var actionPanel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
+        // Help DPI/layout: buttons size themselves correctly
+        btnScanTemplateFields.AutoSize = true;
+        btnRun.AutoSize = true;
+        btnCancel.AutoSize = true;
+        
+        var actionPanel = new FlowLayoutPanel
+        {
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            WrapContents = true,                  // key: at 150% it may need to wrap
+            FlowDirection = FlowDirection.LeftToRight,
+            Margin = Padding.Empty,
+            Padding = Padding.Empty
+        };
         actionPanel.Controls.Add(btnScanTemplateFields);
         actionPanel.Controls.Add(btnRun);
         actionPanel.Controls.Add(btnCancel);
@@ -197,108 +214,158 @@ public sealed class MainForm : Form
 
         // Cosmético: etiquetar los desplegables mediante ToolTips
         var tt = new ToolTip();
-        tt.SetToolTip(cmbFirstField, "Primer Campo: Columna de Excel utilizada para la primera parte del nombre del PDF");
-        tt.SetToolTip(cmbSecondField, "Segundo Campo: Columna de Excel utilizada para la segunda parte del nombre del PDF");
-        tt.SetToolTip(cmbThirdField, "Tercer Campo (opcional): si se elige, se agrega como tercera parte del nombre del PDF");
+        tt.SetToolTip(cmbFirstField,
+            "Primer Campo: Columna de Excel utilizada para la primera parte del nombre del PDF");
+        tt.SetToolTip(cmbSecondField,
+            "Segundo Campo: Columna de Excel utilizada para la segunda parte del nombre del PDF");
+        tt.SetToolTip(cmbThirdField,
+            "Tercer Campo (opcional): si se elige, se agrega como tercera parte del nombre del PDF");
         return;
 
         void AddRow(string label, Control main, Control? b1 = null, Control? b2 = null)
         {
             inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            inputs.Controls.Add(new Label { Text = label, AutoSize = true, Anchor = AnchorStyles.Left, Padding = new Padding(0, 6, 0, 0) }, 0, r);
+            inputs.Controls.Add(
+                new Label
+                {
+                    Text = label,
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Left,
+                    Padding = new Padding(0, 6, 0, 0)
+                },
+                0, r);
 
-            main.Dock = DockStyle.Fill;
+            // DPI-friendly layout:
+            // - Inputs: Fill
+            // - Buttons: AutoSize (avoid clipped height)
+            // - FlowLayoutPanel: Dock=Fill so it gets full width (and can wrap); keep AutoSize for height
+            if (main is FlowLayoutPanel flp)
+            {
+                flp.AutoSize = true;
+                flp.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                flp.Dock = DockStyle.Fill;
+            }
+            else if (main is Button)
+            {
+                main.AutoSize = true;
+                main.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            }
+            else
+            {
+                main.Dock = DockStyle.Fill;
+            }
+
             inputs.Controls.Add(main, 1, r);
 
             if (b1 != null)
             {
-                b1.Dock = DockStyle.Fill;
+                if (b1 is Button)
+                {
+                    b1.AutoSize = true;
+                    b1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+                }
+                else
+                {
+                    b1.Dock = DockStyle.Fill;
+                }
+
                 inputs.Controls.Add(b1, 2, r);
             }
+
             if (b2 != null)
             {
-                b2.Dock = DockStyle.Fill;
+                if (b2 is Button)
+                {
+                    b2.AutoSize = true;
+                    b2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+                }
+                else
+                {
+                    b2.Dock = DockStyle.Fill;
+                }
+
                 inputs.Controls.Add(b2, 3, r);
             }
+
             r++;
         }
-        
-            void AddRow2(string label, Control main, string secondLabel, Control b1)
+
+        void AddRow2(string label, Control main, string secondLabel, Control b1)
+        {
+            inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            // Build a row panel that spans ALL 4 columns of `inputs`,
+            // and splits the available width 50% / 50%.
+            var rowPanel = new TableLayoutPanel
             {
-                inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                Margin = Padding.Empty,
+                Padding = Padding.Empty,
+            };
+            rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+            rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
 
-                // Build a row panel that spans ALL 4 columns of `inputs`,
-                // and splits the available width 50% / 50%.
-                var rowPanel = new TableLayoutPanel
+            // Left half: [label][main]
+            var leftPanel = new TableLayoutPanel
+            {
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                Margin = Padding.Empty,
+                Padding = Padding.Empty,
+            };
+            leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
+            leftPanel.Controls.Add(
+                new Label
                 {
-                    ColumnCount = 2,
-                    Dock = DockStyle.Fill,
+                    Text = label,
                     AutoSize = true,
-                    Margin = Padding.Empty,
-                    Padding = Padding.Empty,
-                };
-                rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-                rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+                    Anchor = AnchorStyles.Left,
+                    Padding = new Padding(0, 6, 0, 0)
+                },
+                0, 0);
 
-                // Left half: [label][main]
-                var leftPanel = new TableLayoutPanel
+            main.Dock = DockStyle.Fill;
+            leftPanel.Controls.Add(main, 1, 0);
+
+            // Right half: [secondLabel][b1]
+            var rightPanel = new TableLayoutPanel
+            {
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                Margin = Padding.Empty,
+                Padding = Padding.Empty,
+            };
+            rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
+            rightPanel.Controls.Add(
+                new Label
                 {
-                    ColumnCount = 2,
-                    Dock = DockStyle.Fill,
+                    Text = secondLabel,
                     AutoSize = true,
-                    Margin = Padding.Empty,
-                    Padding = Padding.Empty,
-                };
-                leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-                leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+                    Anchor = AnchorStyles.Left,
+                    Padding = new Padding(0, 6, 0, 0)
+                },
+                0, 0);
 
-                leftPanel.Controls.Add(
-                    new Label
-                    {
-                        Text = label,
-                        AutoSize = true,
-                        Anchor = AnchorStyles.Left,
-                        Padding = new Padding(0, 6, 0, 0)
-                    },
-                    0, 0);
+            b1.Dock = DockStyle.Fill;
+            rightPanel.Controls.Add(b1, 1, 0);
 
-                main.Dock = DockStyle.Fill;
-                leftPanel.Controls.Add(main, 1, 0);
+            rowPanel.Controls.Add(leftPanel, 0, 0);
+            rowPanel.Controls.Add(rightPanel, 1, 0);
 
-                // Right half: [secondLabel][b1]
-                var rightPanel = new TableLayoutPanel
-                {
-                    ColumnCount = 2,
-                    Dock = DockStyle.Fill,
-                    AutoSize = true,
-                    Margin = Padding.Empty,
-                    Padding = Padding.Empty,
-                };
-                rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-                rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            // Put this row panel into `inputs` spanning all columns
+            inputs.Controls.Add(rowPanel, 0, r);
+            inputs.SetColumnSpan(rowPanel, 4);
 
-                rightPanel.Controls.Add(
-                    new Label
-                    {
-                        Text = secondLabel,
-                        AutoSize = true,
-                        Anchor = AnchorStyles.Left,
-                        Padding = new Padding(0, 6, 0, 0)
-                    },
-                    0, 0);
-
-                b1.Dock = DockStyle.Fill;
-                rightPanel.Controls.Add(b1, 1, 0);
-
-                rowPanel.Controls.Add(leftPanel, 0, 0);
-                rowPanel.Controls.Add(rightPanel, 1, 0);
-
-                // Put this row panel into `inputs` spanning all columns
-                inputs.Controls.Add(rowPanel, 0, r);
-                inputs.SetColumnSpan(rowPanel, 4);
-
-                r++;
-            }
+            r++;
+        }
     }
 
     private void WireEvents()
@@ -459,7 +526,8 @@ public sealed class MainForm : Form
             var path = txtExcelPath.Text;
             if (!File.Exists(path))
             {
-                MessageBox.Show("Por favor, seleccione un archivo de Excel válido.", "Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Por favor, seleccione un archivo de Excel válido.", "Excel", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -532,7 +600,8 @@ public sealed class MainForm : Form
         _templateFields.Clear();
         _templateToExcelHeaderMap = new Dictionary<string, string>(StringComparer.Ordinal);
 
-        AppendLog($"Encabezados cargados. Cantidad: {_headerInfo.Headers.Count}. Fila de encabezado: {_headerInfo.HeaderRowNumber}");
+        AppendLog(
+            $"Encabezados cargados. Cantidad: {_headerInfo.Headers.Count}. Fila de encabezado: {_headerInfo.HeaderRowNumber}");
         UpdateFilenamePreview();
         UpdateUiEnabledState();
     }
@@ -556,7 +625,9 @@ public sealed class MainForm : Form
             thirdHeader = null;
 
         var previewPath = PdfFilenameBuilder.BuildPdfPath(
-            outputDirectory: Directory.Exists(txtOutputDir.Text) ? txtOutputDir.Text : Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            outputDirectory: Directory.Exists(txtOutputDir.Text)
+                ? txtOutputDir.Text
+                : Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
             record: fakeRecord,
             firstFieldHeader: (string)cmbFirstField.SelectedItem,
             secondFieldHeader: (string)cmbSecondField.SelectedItem,
@@ -595,7 +666,8 @@ public sealed class MainForm : Form
     {
         if (_excel == null || _headerInfo == null)
         {
-            MessageBox.Show("Por favor, cargue primero el Excel y los encabezados.", "Ejecutar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Por favor, cargue primero el Excel y los encabezados.", "Ejecutar", MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
             return;
         }
 
@@ -621,13 +693,15 @@ public sealed class MainForm : Form
 
         if (!File.Exists(templatePath))
         {
-            MessageBox.Show("Por favor, seleccione una plantilla de Word válida (.docx).", "Ejecutar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Por favor, seleccione una plantilla de Word válida (.docx).", "Ejecutar",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
         if (!Directory.Exists(outputDir))
         {
-            MessageBox.Show("Por favor, seleccione una carpeta de salida válida.", "Ejecutar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Por favor, seleccione una carpeta de salida válida.", "Ejecutar", MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
             return;
         }
 
@@ -705,7 +779,8 @@ public sealed class MainForm : Form
 
                         ok++;
                         ((IProgress<MergeProgress>)progress).Report(
-                            new MergeProgress(done, totalEstimate, $"Fila {rowNumber}: OK -> {Path.GetFileName(pdfPath)}"));
+                            new MergeProgress(done, totalEstimate,
+                                $"Fila {rowNumber}: OK -> {Path.GetFileName(pdfPath)}"));
                     }
                     catch (Exception ex)
                     {
@@ -808,6 +883,4 @@ public sealed class MainForm : Form
 
         return true;
     }
-
-
 }

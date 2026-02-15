@@ -1,5 +1,5 @@
 using LMM.UI;
-using static System.Windows.Forms.Application;
+using FormsApplication = System.Windows.Forms.Application;
 
 namespace LMM;
 
@@ -8,7 +8,12 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
-        ApplicationConfiguration.Initialize();
-        Run(new MainForm());
+        // Better DPI behavior across 100%/150% and multi-monitor
+        FormsApplication.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+
+        FormsApplication.EnableVisualStyles();
+        FormsApplication.SetCompatibleTextRenderingDefault(false);
+
+        FormsApplication.Run(new MainForm());
     }
 }
