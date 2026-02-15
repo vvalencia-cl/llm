@@ -17,8 +17,9 @@ public sealed class MainForm : Form
     private NumericUpDown numHeaderRow = null!;
     private Button btnRefreshHeaders = null!;
 
-    private ComboBox cmbFieldX = null!;
-    private ComboBox cmbFieldY = null!;
+    private ComboBox cmbFirstField = null!;
+    private ComboBox cmbSecondField = null!;
+    private ComboBox cmbThirdField = null!;
     private Label lblFilenamePreview = null!;
 
     private TextBox txtOutputDir = null!;
@@ -38,6 +39,7 @@ public sealed class MainForm : Form
     private Dictionary<string, string> _templateToExcelHeaderMap = new(StringComparer.Ordinal);
     private CancellationTokenSource? _cts;
 
+    private const string OptionalThirdFieldNoneOption = "(sin Tercer Campo)";
 
     public MainForm()
     {
@@ -91,26 +93,6 @@ public sealed class MainForm : Form
 
         // Row helper
         int r = 0;
-        void AddRow(string label, Control main, Control? b1 = null, Control? b2 = null)
-        {
-            inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            inputs.Controls.Add(new Label { Text = label, AutoSize = true, Anchor = AnchorStyles.Left, Padding = new Padding(0, 6, 0, 0) }, 0, r);
-
-            main.Dock = DockStyle.Fill;
-            inputs.Controls.Add(main, 1, r);
-
-            if (b1 != null)
-            {
-                b1.Dock = DockStyle.Fill;
-                inputs.Controls.Add(b1, 2, r);
-            }
-            if (b2 != null)
-            {
-                b2.Dock = DockStyle.Fill;
-                inputs.Controls.Add(b2, 3, r);
-            }
-            r++;
-        }
 
         // Template
         txtTemplatePath = new TextBox { PlaceholderText = "Seleccione la plantilla de Word (.docx)..." };
@@ -120,13 +102,16 @@ public sealed class MainForm : Form
         // Excel
         txtExcelPath = new TextBox { PlaceholderText = "Seleccione el origen de datos Excel (.xlsx)..." };
         btnBrowseExcel = new Button { Text = "Buscar..." };
-        btnLoadExcel = new Button { Text = "Cargar Excel" };
+        
         AddRow("Archivo Excel", txtExcelPath, btnBrowseExcel, btnLoadExcel);
+        
+        btnLoadExcel = new Button { Text = "Analizar Excel"  };
+        AddRow("Analizar", btnLoadExcel);
 
         // Worksheet + header row
         cmbWorksheet = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         numHeaderRow = new NumericUpDown { Minimum = 1, Maximum = 100000, Value = 1 };
-        btnRefreshHeaders = new Button { Text = "Actualizar encabezados" };
+        btnRefreshHeaders = new Button { Text = "Refrescar columnas de Excel" };
 
         var wsPanel = new TableLayoutPanel { ColumnCount = 3, Dock = DockStyle.Fill, AutoSize = true };
         wsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70));
@@ -135,23 +120,27 @@ public sealed class MainForm : Form
         wsPanel.Controls.Add(cmbWorksheet, 0, 0);
         wsPanel.Controls.Add(numHeaderRow, 1, 0);
 
-        AddRow("Hoja / Fila encabezado", wsPanel, btnRefreshHeaders);
+        AddRow2("Hoja de planilla con datos", wsPanel, "Nº Fila con encabezados", numHeaderRow);
 
-        // FieldX / FieldY
-        cmbFieldX = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-        cmbFieldY = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+        AddRow("Acciones", btnRefreshHeaders);
+        
+        cmbFirstField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+        cmbSecondField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+        cmbThirdField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
 
-        var fieldPanel = new TableLayoutPanel { ColumnCount = 2, Dock = DockStyle.Fill, AutoSize = true };
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-        fieldPanel.Controls.Add(cmbFieldX, 0, 0);
-        fieldPanel.Controls.Add(cmbFieldY, 1, 0);
+        var fieldPanel = new TableLayoutPanel { ColumnCount = 3, Dock = DockStyle.Fill, AutoSize = true };
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333f));
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333f));
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333f));
+        fieldPanel.Controls.Add(cmbFirstField, 0, 0);
+        fieldPanel.Controls.Add(cmbSecondField, 1, 0);
+        fieldPanel.Controls.Add(cmbThirdField, 2, 0);
 
-        AddRow("Nombre archivo CampoX / CampoY", fieldPanel);
+        AddRow("Nombre de archivo", fieldPanel);
 
         // Filename preview
-        lblFilenamePreview = new Label { AutoSize = true, Text = "Vista previa: (no listo)" };
-        AddRow("Vista previa salida", lblFilenamePreview);
+        lblFilenamePreview = new Label { AutoSize = true, Text = "" };
+        AddRow("Nombre de archivo a generar", lblFilenamePreview);
 
         // Output directory
         txtOutputDir = new TextBox { PlaceholderText = "Seleccione la carpeta de salida..." };
@@ -206,10 +195,110 @@ public sealed class MainForm : Form
 
         lstLog.ContextMenuStrip = logMenu;
 
-        // Cosmético: etiquetar los desplegables de CampoX/CampoY mediante ToolTips
+        // Cosmético: etiquetar los desplegables mediante ToolTips
         var tt = new ToolTip();
-        tt.SetToolTip(cmbFieldX, "CampoX: Columna de Excel utilizada para la primera parte del nombre del PDF");
-        tt.SetToolTip(cmbFieldY, "CampoY: Columna de Excel utilizada para la segunda parte del nombre del PDF");
+        tt.SetToolTip(cmbFirstField, "Primer Campo: Columna de Excel utilizada para la primera parte del nombre del PDF");
+        tt.SetToolTip(cmbSecondField, "Segundo Campo: Columna de Excel utilizada para la segunda parte del nombre del PDF");
+        tt.SetToolTip(cmbThirdField, "Tercer Campo (opcional): si se elige, se agrega como tercera parte del nombre del PDF");
+        return;
+
+        void AddRow(string label, Control main, Control? b1 = null, Control? b2 = null)
+        {
+            inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            inputs.Controls.Add(new Label { Text = label, AutoSize = true, Anchor = AnchorStyles.Left, Padding = new Padding(0, 6, 0, 0) }, 0, r);
+
+            main.Dock = DockStyle.Fill;
+            inputs.Controls.Add(main, 1, r);
+
+            if (b1 != null)
+            {
+                b1.Dock = DockStyle.Fill;
+                inputs.Controls.Add(b1, 2, r);
+            }
+            if (b2 != null)
+            {
+                b2.Dock = DockStyle.Fill;
+                inputs.Controls.Add(b2, 3, r);
+            }
+            r++;
+        }
+        
+            void AddRow2(string label, Control main, string secondLabel, Control b1)
+            {
+                inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+                // Build a row panel that spans ALL 4 columns of `inputs`,
+                // and splits the available width 50% / 50%.
+                var rowPanel = new TableLayoutPanel
+                {
+                    ColumnCount = 2,
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    Margin = Padding.Empty,
+                    Padding = Padding.Empty,
+                };
+                rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+                rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+
+                // Left half: [label][main]
+                var leftPanel = new TableLayoutPanel
+                {
+                    ColumnCount = 2,
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    Margin = Padding.Empty,
+                    Padding = Padding.Empty,
+                };
+                leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+                leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
+                leftPanel.Controls.Add(
+                    new Label
+                    {
+                        Text = label,
+                        AutoSize = true,
+                        Anchor = AnchorStyles.Left,
+                        Padding = new Padding(0, 6, 0, 0)
+                    },
+                    0, 0);
+
+                main.Dock = DockStyle.Fill;
+                leftPanel.Controls.Add(main, 1, 0);
+
+                // Right half: [secondLabel][b1]
+                var rightPanel = new TableLayoutPanel
+                {
+                    ColumnCount = 2,
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    Margin = Padding.Empty,
+                    Padding = Padding.Empty,
+                };
+                rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+                rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
+                rightPanel.Controls.Add(
+                    new Label
+                    {
+                        Text = secondLabel,
+                        AutoSize = true,
+                        Anchor = AnchorStyles.Left,
+                        Padding = new Padding(0, 6, 0, 0)
+                    },
+                    0, 0);
+
+                b1.Dock = DockStyle.Fill;
+                rightPanel.Controls.Add(b1, 1, 0);
+
+                rowPanel.Controls.Add(leftPanel, 0, 0);
+                rowPanel.Controls.Add(rightPanel, 1, 0);
+
+                // Put this row panel into `inputs` spanning all columns
+                inputs.Controls.Add(rowPanel, 0, r);
+                inputs.SetColumnSpan(rowPanel, 4);
+
+                r++;
+            }
     }
 
     private void WireEvents()
@@ -224,8 +313,9 @@ public sealed class MainForm : Form
         cmbWorksheet.SelectedIndexChanged += (_, __) => RefreshHeaders();
         numHeaderRow.ValueChanged += (_, __) => RefreshHeaders();
 
-        cmbFieldX.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
-        cmbFieldY.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
+        cmbFirstField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
+        cmbSecondField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
+        cmbThirdField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
         txtOutputDir.TextChanged += (_, __) => UpdateFilenamePreview();
 
         btnScanTemplateFields.Click += (_, __) => ScanTemplateAndValidate();
@@ -279,8 +369,9 @@ public sealed class MainForm : Form
         cmbWorksheet.Enabled = excelLoaded;
         numHeaderRow.Enabled = excelLoaded;
 
-        cmbFieldX.Enabled = headersReady;
-        cmbFieldY.Enabled = headersReady;
+        cmbFirstField.Enabled = headersReady;
+        cmbSecondField.Enabled = headersReady;
+        cmbThirdField.Enabled = headersReady;
 
         // Scan button can remain (optional tool), but is not required for running
         btnScanTemplateFields.Enabled = File.Exists(txtTemplatePath.Text) && headersReady;
@@ -290,8 +381,8 @@ public sealed class MainForm : Form
             excelLoaded &&
             headersReady &&
             Directory.Exists(txtOutputDir.Text) &&
-            cmbFieldX.SelectedItem != null &&
-            cmbFieldY.SelectedItem != null &&
+            cmbFirstField.SelectedItem != null &&
+            cmbSecondField.SelectedItem != null &&
             (_cts == null);
 
         btnRun.Enabled = canRun;
@@ -357,7 +448,7 @@ public sealed class MainForm : Form
         }
     }
 
-    private async System.Threading.Tasks.Task LoadExcelAsync()
+    private async Task LoadExcelAsync()
     {
         try
         {
@@ -392,7 +483,7 @@ public sealed class MainForm : Form
             UpdateUiEnabledState();
         }
 
-        await System.Threading.Tasks.Task.CompletedTask;
+        await Task.CompletedTask;
     }
 
     private void RefreshHeaders()
@@ -412,8 +503,9 @@ public sealed class MainForm : Form
                 userMessage: out var msg))
         {
             AppendLog("Encabezados: ERROR -> " + msg);
-            cmbFieldX.DataSource = null;
-            cmbFieldY.DataSource = null;
+            cmbFirstField.DataSource = null;
+            cmbSecondField.DataSource = null;
+            cmbThirdField.DataSource = null;
             UpdateFilenamePreview();
             UpdateUiEnabledState();
             return;
@@ -422,13 +514,18 @@ public sealed class MainForm : Form
         _headerInfo = headerInfo!;
 
         var headers = _headerInfo.Headers.ToList();
-        cmbFieldX.DataSource = headers.ToList();
-        cmbFieldY.DataSource = headers.ToList();
+        cmbFirstField.DataSource = headers.ToList();
+        cmbSecondField.DataSource = headers.ToList();
+
+        var thirdOptions = new List<string>(capacity: headers.Count + 1) { OptionalThirdFieldNoneOption };
+        thirdOptions.AddRange(headers);
+        cmbThirdField.DataSource = thirdOptions;
 
         if (headers.Count > 0)
         {
-            cmbFieldX.SelectedIndex = 0;
-            cmbFieldY.SelectedIndex = Math.Min(1, headers.Count - 1);
+            cmbFirstField.SelectedIndex = 0;
+            cmbSecondField.SelectedIndex = Math.Min(1, headers.Count - 1);
+            cmbThirdField.SelectedIndex = 0; // none by default
         }
 
         // Because headers changed, force re-scan/remap
@@ -443,10 +540,10 @@ public sealed class MainForm : Form
     private void UpdateFilenamePreview()
     {
         if (_headerInfo == null ||
-            cmbFieldX.SelectedItem == null ||
-            cmbFieldY.SelectedItem == null)
+            cmbFirstField.SelectedItem == null ||
+            cmbSecondField.SelectedItem == null)
         {
-            lblFilenamePreview.Text = "Vista previa: (no listo)";
+            lblFilenamePreview.Text = "";
             return;
         }
 
@@ -454,14 +551,19 @@ public sealed class MainForm : Form
             .Where(h => !string.IsNullOrWhiteSpace(h))
             .ToDictionary(h => h, h => $"<{h}>", StringComparer.Ordinal);
 
+        var thirdHeader = (string?)cmbThirdField.SelectedItem;
+        if (string.Equals(thirdHeader, OptionalThirdFieldNoneOption, StringComparison.Ordinal))
+            thirdHeader = null;
+
         var previewPath = PdfFilenameBuilder.BuildPdfPath(
             outputDirectory: Directory.Exists(txtOutputDir.Text) ? txtOutputDir.Text : Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
             record: fakeRecord,
-            fieldXHeader: (string)cmbFieldX.SelectedItem,
-            fieldYHeader: (string)cmbFieldY.SelectedItem,
+            firstFieldHeader: (string)cmbFirstField.SelectedItem,
+            secondFieldHeader: (string)cmbSecondField.SelectedItem,
+            thirdFieldHeader: thirdHeader,
             emptyFallback: "fila_###");
 
-        lblFilenamePreview.Text = "Vista previa: " + Path.GetFileName(previewPath);
+        lblFilenamePreview.Text = Path.GetFileName(previewPath);
     }
 
     private void ScanTemplateAndValidate()
@@ -489,7 +591,7 @@ public sealed class MainForm : Form
         }
     }
 
-    private async System.Threading.Tasks.Task RunMergeAsync()
+    private async Task RunMergeAsync()
     {
         if (_excel == null || _headerInfo == null)
         {
@@ -510,8 +612,12 @@ public sealed class MainForm : Form
         var outputDir = txtOutputDir.Text;
         var worksheetName = (string)cmbWorksheet.SelectedItem!;
         var headerRow = (int)numHeaderRow.Value;
-        var fieldXHeader = (string)cmbFieldX.SelectedItem!;
-        var fieldYHeader = (string)cmbFieldY.SelectedItem!;
+        var fieldXHeader = (string)cmbFirstField.SelectedItem!;
+        var fieldYHeader = (string)cmbSecondField.SelectedItem!;
+
+        var thirdHeader = (string?)cmbThirdField.SelectedItem;
+        if (string.Equals(thirdHeader, OptionalThirdFieldNoneOption, StringComparison.Ordinal))
+            thirdHeader = null;
 
         if (!File.Exists(templatePath))
         {
@@ -571,12 +677,13 @@ public sealed class MainForm : Form
 
                     try
                     {
-                        // PDF name uses the ORIGINAL Excel headers user selected for FieldX/FieldY
+                        // PDF name uses the ORIGINAL Excel headers user selected
                         var pdfPath = PdfFilenameBuilder.BuildPdfPath(
                             outputDirectory: outputDir,
                             record: excelRecord,
-                            fieldXHeader: fieldXHeader,
-                            fieldYHeader: fieldYHeader,
+                            firstFieldHeader: fieldXHeader,
+                            secondFieldHeader: fieldYHeader,
+                            thirdFieldHeader: thirdHeader,
                             emptyFallback: $"row_{rowNumber}");
 
                         // Overwrite behavior

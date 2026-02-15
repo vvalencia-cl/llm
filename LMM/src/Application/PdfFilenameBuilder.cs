@@ -5,10 +5,11 @@ public static class PdfFilenameBuilder
     public static string BuildPdfPath(
         string outputDirectory,
         Dictionary<string, string> record,
-        string fieldXHeader,
-        string fieldYHeader,
+        string firstFieldHeader,
+        string secondFieldHeader,
+        string? thirdFieldHeader = null,
         string separator = "_",
-        string emptyFallback = "row") // used only if both parts become empty after sanitization
+        string emptyFallback = "row") // used only if all parts become empty after sanitization
     {
         if (string.IsNullOrWhiteSpace(outputDirectory))
             throw new ArgumentException("El directorio de salida es obligatorio.", nameof(outputDirectory));
@@ -19,27 +20,29 @@ public static class PdfFilenameBuilder
         if (record == null)
             throw new ArgumentNullException(nameof(record));
 
-        if (string.IsNullOrWhiteSpace(fieldXHeader))
-            throw new ArgumentException("El encabezado del CampoX es obligatorio.", nameof(fieldXHeader));
+        if (string.IsNullOrWhiteSpace(firstFieldHeader))
+            throw new ArgumentException("El encabezado del FirstField es obligatorio.", nameof(firstFieldHeader));
 
-        if (string.IsNullOrWhiteSpace(fieldYHeader))
-            throw new ArgumentException("El encabezado del CampoY es obligatorio.", nameof(fieldYHeader));
+        if (string.IsNullOrWhiteSpace(secondFieldHeader))
+            throw new ArgumentException("El encabezado del SecondField es obligatorio.", nameof(secondFieldHeader));
 
-        var xRaw = record.TryGetValue(fieldXHeader, out var xv) ? (xv ?? "") : "";
-        var yRaw = record.TryGetValue(fieldYHeader, out var yv) ? (yv ?? "") : "";
+        var firstRaw = record.TryGetValue(firstFieldHeader, out var v1) ? (v1 ?? "") : "";
+        var secondRaw = record.TryGetValue(secondFieldHeader, out var v2) ? (v2 ?? "") : "";
 
-        var x = SanitizeFilenamePart(xRaw);
-        var y = SanitizeFilenamePart(yRaw);
+        var thirdRaw = "";
+        if (!string.IsNullOrWhiteSpace(thirdFieldHeader))
+            thirdRaw = record.TryGetValue(thirdFieldHeader, out var v3) ? (v3 ?? "") : "";
 
-        string baseName;
-        if (!string.IsNullOrEmpty(x) && !string.IsNullOrEmpty(y))
-            baseName = x + separator + y;
-        else if (!string.IsNullOrEmpty(x))
-            baseName = x;
-        else if (!string.IsNullOrEmpty(y))
-            baseName = y;
-        else
-            baseName = emptyFallback; // e.g. "row" (you can later append row number in caller)
+        var first = SanitizeFilenamePart(firstRaw);
+        var second = SanitizeFilenamePart(secondRaw);
+        var third = SanitizeFilenamePart(thirdRaw);
+
+        var parts = new List<string>(capacity: 3);
+        if (!string.IsNullOrEmpty(first)) parts.Add(first);
+        if (!string.IsNullOrEmpty(second)) parts.Add(second);
+        if (!string.IsNullOrEmpty(third)) parts.Add(third);
+
+        var baseName = parts.Count > 0 ? string.Join(separator, parts) : emptyFallback;
 
         baseName = TrimToMaxBaseNameLength(baseName, maxLength: 180); // keep room for ".pdf" + path
 
