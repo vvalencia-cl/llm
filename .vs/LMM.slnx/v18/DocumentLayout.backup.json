@@ -1,0 +1,357 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\headerfieldmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\headerfieldmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\mainform.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\mainform.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\stataskrunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\stataskrunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\mailmergetopdf.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\mailmergetopdf.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\wordpdfexporter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\wordpdfexporter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\pdffilenamebuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\pdffilenamebuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\mergerunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\mergerunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\lmm.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\lmm.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\closedxmldatasourceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\closedxmldatasourceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\closedxmlrecordreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\closedxmlrecordreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\closedxmlheaderreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\closedxmlheaderreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\closedxmlexcelloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\closedxmlexcelloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\mailmergevalidation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\mailmergevalidation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\wordtemplatefieldscanner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\wordtemplatefieldscanner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|c:\\users\\victor valencia\\source\\repos\\lmm\\lmm\\openxmlmailmerge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\openxmlmailmerge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|C:\\Users\\Victor Valencia\\source\\repos\\LMM\\lmm\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{7E6C64E9-0A40-9514-4BA7-6B2BC075E828}|LMM\\LMM.csproj|solutionrelative:lmm\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "LMM",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\LMM.csproj",
+              "RelativeDocumentMoniker": "LMM\\LMM.csproj",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\LMM.csproj*",
+              "RelativeToolTip": "LMM\\LMM.csproj*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-15T00:19:13.454Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainForm.resx",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MainForm.resx",
+              "RelativeDocumentMoniker": "LMM\\MainForm.resx",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MainForm.resx",
+              "RelativeToolTip": "LMM\\MainForm.resx",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2026-02-15T02:26:53.713Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainForm.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MainForm.cs",
+              "RelativeDocumentMoniker": "LMM\\MainForm.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MainForm.cs [Design]",
+              "RelativeToolTip": "LMM\\MainForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T02:26:46.754Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HeaderFieldMapper.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\HeaderFieldMapper.cs",
+              "RelativeDocumentMoniker": "LMM\\HeaderFieldMapper.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\HeaderFieldMapper.cs",
+              "RelativeToolTip": "LMM\\HeaderFieldMapper.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAswFAAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T02:23:53.833Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainForm.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MainForm.cs",
+              "RelativeDocumentMoniker": "LMM\\MainForm.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MainForm.cs",
+              "RelativeToolTip": "LMM\\MainForm.cs",
+              "ViewState": "AgIAAKYBAAAAAAAAAAAcwMUBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T01:59:41.678Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\Program.cs",
+              "RelativeDocumentMoniker": "LMM\\Program.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\Program.cs",
+              "RelativeToolTip": "LMM\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T01:58:35.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "StaTaskRunner.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\StaTaskRunner.cs",
+              "RelativeDocumentMoniker": "LMM\\StaTaskRunner.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\StaTaskRunner.cs",
+              "RelativeToolTip": "LMM\\StaTaskRunner.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAUwE0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:42:18.427Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MailMergeToPdf.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MailMergeToPdf.cs",
+              "RelativeDocumentMoniker": "LMM\\MailMergeToPdf.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MailMergeToPdf.cs",
+              "RelativeToolTip": "LMM\\MailMergeToPdf.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:39:18.187Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "WordPdfExporter.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\WordPdfExporter.cs",
+              "RelativeDocumentMoniker": "LMM\\WordPdfExporter.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\WordPdfExporter.cs",
+              "RelativeToolTip": "LMM\\WordPdfExporter.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAUwGUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:38:44.995Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "PdfFilenameBuilder.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\PdfFilenameBuilder.cs",
+              "RelativeDocumentMoniker": "LMM\\PdfFilenameBuilder.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\PdfFilenameBuilder.cs",
+              "RelativeToolTip": "LMM\\PdfFilenameBuilder.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAUwIcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:37:16.036Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MergeRunner.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MergeRunner.cs",
+              "RelativeDocumentMoniker": "LMM\\MergeRunner.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MergeRunner.cs",
+              "RelativeToolTip": "LMM\\MergeRunner.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAUwFAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:36:02.694Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ClosedXmlDataSourceService.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlDataSourceService.cs",
+              "RelativeDocumentMoniker": "LMM\\ClosedXmlDataSourceService.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlDataSourceService.cs",
+              "RelativeToolTip": "LMM\\ClosedXmlDataSourceService.cs",
+              "ViewState": "AgIAACcBAAAAAAAAAAAiwE4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:26:27.811Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ClosedXmlRecordReader.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlRecordReader.cs",
+              "RelativeDocumentMoniker": "LMM\\ClosedXmlRecordReader.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlRecordReader.cs",
+              "RelativeToolTip": "LMM\\ClosedXmlRecordReader.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:23:14.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ClosedXmlHeaderReader.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlHeaderReader.cs",
+              "RelativeDocumentMoniker": "LMM\\ClosedXmlHeaderReader.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlHeaderReader.cs",
+              "RelativeToolTip": "LMM\\ClosedXmlHeaderReader.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAUwGAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:22:26.109Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ClosedXmlExcelLoader.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlExcelLoader.cs",
+              "RelativeDocumentMoniker": "LMM\\ClosedXmlExcelLoader.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\ClosedXmlExcelLoader.cs",
+              "RelativeToolTip": "LMM\\ClosedXmlExcelLoader.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:21:59.069Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DTOs.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\DTOs.cs",
+              "RelativeDocumentMoniker": "LMM\\DTOs.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\DTOs.cs",
+              "RelativeToolTip": "LMM\\DTOs.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:21:34.349Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "MailMergeValidation.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MailMergeValidation.cs",
+              "RelativeDocumentMoniker": "LMM\\MailMergeValidation.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\MailMergeValidation.cs",
+              "RelativeToolTip": "LMM\\MailMergeValidation.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:19:25.306Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "WordTemplateFieldScanner.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\WordTemplateFieldScanner.cs",
+              "RelativeDocumentMoniker": "LMM\\WordTemplateFieldScanner.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\WordTemplateFieldScanner.cs",
+              "RelativeToolTip": "LMM\\WordTemplateFieldScanner.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAowFgAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T00:16:49.774Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "OpenXmlMailMerge.cs",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\OpenXmlMailMerge.cs",
+              "RelativeDocumentMoniker": "LMM\\OpenXmlMailMerge.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\OpenXmlMailMerge.cs",
+              "RelativeToolTip": "LMM\\OpenXmlMailMerge.cs",
+              "ViewState": "AgIAAHMAAAAAAAAAAAAqwH0AAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-14T23:40:50.791Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Form1.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\Form1.cs",
+              "RelativeDocumentMoniker": "LMM\\Form1.cs",
+              "ToolTip": "C:\\Users\\Victor Valencia\\source\\repos\\LMM\\LMM\\Form1.cs [Design]",
+              "RelativeToolTip": "LMM\\Form1.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-14T21:51:55.396Z",
+              "EditorCaption": " [Design]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
