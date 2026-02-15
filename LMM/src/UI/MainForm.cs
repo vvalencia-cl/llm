@@ -374,7 +374,45 @@ public sealed class MainForm : Form
         btnBrowseExcel.Click += (_, __) => BrowseExcel();
         btnBrowseOutputDir.Click += (_, __) => BrowseOutputDir();
 
-        btnLoadExcel.Click += async (_, __) => await LoadExcelAsync();
+        btnLoadExcel.Click += async (_, __) =>
+        {
+            // User feedback: disable relevant controls + show wait cursor + show marquee progress
+            var prevCursor = Cursor.Current;
+            try
+            {
+                btnLoadExcel.Enabled = false;
+                btnBrowseExcel.Enabled = false;
+                txtExcelPath.Enabled = false;
+
+                progressBar.Style = ProgressBarStyle.Marquee;
+                progressBar.MarqueeAnimationSpeed = 30;
+
+                Cursor.Current = Cursors.WaitCursor;
+                AppendLog("Analizando Excel... (esto puede tardar unos segundos)");
+
+                await LoadExcelAsync();
+
+                AppendLog("Excel analizado.");
+            }
+            catch (Exception ex)
+            {
+                AppendLog("Analizar Excel: ERROR -> " + ex.Message);
+                MessageBox.Show(ex.Message, "Error al analizar Excel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                progressBar.MarqueeAnimationSpeed = 0;
+                progressBar.Style = ProgressBarStyle.Blocks;
+
+                Cursor.Current = prevCursor;
+
+                // Re-evaluate enabled state based on current app state
+                txtExcelPath.Enabled = true;
+                btnBrowseExcel.Enabled = true;
+                UpdateUiEnabledState();
+            }
+        };
+
         btnRefreshHeaders.Click += (_, __) => RefreshHeaders();
 
         cmbWorksheet.SelectedIndexChanged += (_, __) => RefreshHeaders();
@@ -526,13 +564,10 @@ public sealed class MainForm : Form
             var path = txtExcelPath.Text;
             if (!File.Exists(path))
             {
-                MessageBox.Show("Por favor, seleccione un archivo de Excel válido.", "Excel", MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                MessageBox.Show("Por favor, seleccione un archivo de Excel válido.", "Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // load workbook (fast) on UI thread is usually ok for small files;
-            // if you want, we can move this to a background thread too.
             _excel = new ClosedXmlDataSourceService(path);
 
             var sheets = _excel.GetWorksheetNames();
