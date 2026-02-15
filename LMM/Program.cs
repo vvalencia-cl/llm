@@ -1,4 +1,4 @@
-namespace LLM
+namespace LMM
 {
   
     internal static class Program
