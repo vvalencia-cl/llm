@@ -1,4 +1,4 @@
-﻿namespace LMM;
+﻿namespace LMM.Domain.Dto;
 
 public sealed record ExcelLoadResult(
     IReadOnlyList<string> WorksheetNames,

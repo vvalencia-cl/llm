@@ -1,4 +1,6 @@
-﻿namespace LMM;
+﻿using LMM.Domain.Dto;
+
+namespace LMM;
 
 public static class MergeRunner
 {
