@@ -11,19 +11,19 @@ public static class PdfFilenameBuilder
         string emptyFallback = "row") // used only if both parts become empty after sanitization
     {
         if (string.IsNullOrWhiteSpace(outputDirectory))
-            throw new ArgumentException("Output directory is required.", nameof(outputDirectory));
+            throw new ArgumentException("El directorio de salida es obligatorio.", nameof(outputDirectory));
 
         if (!Directory.Exists(outputDirectory))
-            throw new DirectoryNotFoundException($"Output directory not found: {outputDirectory}");
+            throw new DirectoryNotFoundException($"Directorio de salida no encontrado: {outputDirectory}");
 
         if (record == null)
             throw new ArgumentNullException(nameof(record));
 
         if (string.IsNullOrWhiteSpace(fieldXHeader))
-            throw new ArgumentException("FieldX header is required.", nameof(fieldXHeader));
+            throw new ArgumentException("El encabezado del CampoX es obligatorio.", nameof(fieldXHeader));
 
         if (string.IsNullOrWhiteSpace(fieldYHeader))
-            throw new ArgumentException("FieldY header is required.", nameof(fieldYHeader));
+            throw new ArgumentException("El encabezado del CampoY es obligatorio.", nameof(fieldYHeader));
 
         var xRaw = record.TryGetValue(fieldXHeader, out var xv) ? (xv ?? "") : "";
         var yRaw = record.TryGetValue(fieldYHeader, out var yv) ? (yv ?? "") : "";

@@ -14,14 +14,14 @@ public static class ClosedXmlHeaderReader
         bool errorOnDuplicateHeader = true)
     {
         if (headerRowNumber < 1)
-            throw new ArgumentOutOfRangeException(nameof(headerRowNumber), "Header row must be >= 1.");
+            throw new ArgumentOutOfRangeException(nameof(headerRowNumber), "La fila de encabezado debe ser >= 1.");
 
         using var wb = new XLWorkbook(xlsxPath);
         var ws = wb.Worksheet(worksheetName);
 
         var usedRange = ws.RangeUsed();
         if (usedRange == null)
-            throw new InvalidOperationException($"Worksheet '{worksheetName}' is empty.");
+            throw new InvalidOperationException($"La hoja de trabajo '{worksheetName}' está vacía.");
 
         var firstUsedCol = usedRange.RangeAddress.FirstAddress.ColumnNumber;
         var lastUsedCol = usedRange.RangeAddress.LastAddress.ColumnNumber;
@@ -29,7 +29,7 @@ public static class ClosedXmlHeaderReader
 
         if (headerRowNumber > lastUsedRow)
             throw new InvalidOperationException(
-                $"Header row {headerRowNumber} is below the last used row ({lastUsedRow}) in '{worksheetName}'.");
+                $"La fila de encabezado {headerRowNumber} está por debajo de la última fila utilizada ({lastUsedRow}) en '{worksheetName}'.");
 
         var headers = new List<string>();
 
@@ -51,7 +51,7 @@ public static class ClosedXmlHeaderReader
 
         if (headers.All(h => string.IsNullOrWhiteSpace(h)))
             throw new InvalidOperationException(
-                $"Header row {headerRowNumber} in '{worksheetName}' does not contain any header text.");
+                $"La fila de encabezado {headerRowNumber} en '{worksheetName}' no contiene ningún texto de encabezado.");
 
         if (errorOnEmptyHeader)
         {
@@ -64,9 +64,9 @@ public static class ClosedXmlHeaderReader
             if (empties.Count > 0)
             {
                 throw new InvalidOperationException(
-                    "The header row contains empty column names at positions: " +
+                    "La fila de encabezado contiene nombres de columna vacíos en las posiciones: " +
                     string.Join(", ", empties) +
-                    ". Please fill them in or remove those columns from the used range.");
+                    ". Por favor, rellénelos o elimine esas columnas del rango utilizado.");
             }
         }
 
@@ -83,8 +83,8 @@ public static class ClosedXmlHeaderReader
             if (duplicates.Count > 0)
             {
                 throw new InvalidOperationException(
-                    "Duplicate header names found (exact match): " + string.Join(", ", duplicates) +
-                    ". Header names must be unique.");
+                    "Se encontraron nombres de encabezado duplicados (coincidencia exacta): " + string.Join(", ", duplicates) +
+                    ". Los nombres de los encabezados deben ser únicos.");
             }
         }
 

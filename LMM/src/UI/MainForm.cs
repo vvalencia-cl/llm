@@ -41,7 +41,7 @@ public sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Mail Merge (Excel → Word Template → PDF)";
+        Text = "Combinación de correspondencia (Excel → Plantilla Word → PDF)";
         Width = 980;
         Height = 720;
         StartPosition = FormStartPosition.CenterScreen;
@@ -113,20 +113,20 @@ public sealed class MainForm : Form
         }
 
         // Template
-        txtTemplatePath = new TextBox { PlaceholderText = "Select Word template (.docx)..." };
-        btnBrowseTemplate = new Button { Text = "Browse..." };
-        AddRow("Word template", txtTemplatePath, btnBrowseTemplate);
+        txtTemplatePath = new TextBox { PlaceholderText = "Seleccione la plantilla de Word (.docx)..." };
+        btnBrowseTemplate = new Button { Text = "Buscar..." };
+        AddRow("Plantilla Word", txtTemplatePath, btnBrowseTemplate);
 
         // Excel
-        txtExcelPath = new TextBox { PlaceholderText = "Select Excel data source (.xlsx)..." };
-        btnBrowseExcel = new Button { Text = "Browse..." };
-        btnLoadExcel = new Button { Text = "Load Excel" };
-        AddRow("Excel file", txtExcelPath, btnBrowseExcel, btnLoadExcel);
+        txtExcelPath = new TextBox { PlaceholderText = "Seleccione el origen de datos Excel (.xlsx)..." };
+        btnBrowseExcel = new Button { Text = "Buscar..." };
+        btnLoadExcel = new Button { Text = "Cargar Excel" };
+        AddRow("Archivo Excel", txtExcelPath, btnBrowseExcel, btnLoadExcel);
 
         // Worksheet + header row
         cmbWorksheet = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         numHeaderRow = new NumericUpDown { Minimum = 1, Maximum = 100000, Value = 1 };
-        btnRefreshHeaders = new Button { Text = "Refresh headers" };
+        btnRefreshHeaders = new Button { Text = "Actualizar encabezados" };
 
         var wsPanel = new TableLayoutPanel { ColumnCount = 3, Dock = DockStyle.Fill, AutoSize = true };
         wsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70));
@@ -135,7 +135,7 @@ public sealed class MainForm : Form
         wsPanel.Controls.Add(cmbWorksheet, 0, 0);
         wsPanel.Controls.Add(numHeaderRow, 1, 0);
 
-        AddRow("Worksheet / Header row", wsPanel, btnRefreshHeaders);
+        AddRow("Hoja / Fila encabezado", wsPanel, btnRefreshHeaders);
 
         // FieldX / FieldY
         cmbFieldX = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
@@ -147,28 +147,28 @@ public sealed class MainForm : Form
         fieldPanel.Controls.Add(cmbFieldX, 0, 0);
         fieldPanel.Controls.Add(cmbFieldY, 1, 0);
 
-        AddRow("Filename FieldX / FieldY", fieldPanel);
+        AddRow("Nombre archivo CampoX / CampoY", fieldPanel);
 
         // Filename preview
-        lblFilenamePreview = new Label { AutoSize = true, Text = "Preview: (not ready)" };
-        AddRow("Output preview", lblFilenamePreview);
+        lblFilenamePreview = new Label { AutoSize = true, Text = "Vista previa: (no listo)" };
+        AddRow("Vista previa salida", lblFilenamePreview);
 
         // Output directory
-        txtOutputDir = new TextBox { PlaceholderText = "Select output folder..." };
-        btnBrowseOutputDir = new Button { Text = "Browse..." };
-        AddRow("Output folder", txtOutputDir, btnBrowseOutputDir);
+        txtOutputDir = new TextBox { PlaceholderText = "Seleccione la carpeta de salida..." };
+        btnBrowseOutputDir = new Button { Text = "Buscar..." };
+        AddRow("Carpeta de salida", txtOutputDir, btnBrowseOutputDir);
 
         // Actions row
-        btnScanTemplateFields = new Button { Text = "Scan template fields" };
-        btnRun = new Button { Text = "Run merge" };
-        btnCancel = new Button { Text = "Cancel", Enabled = false };
+        btnScanTemplateFields = new Button { Text = "Escanear campos plantilla" };
+        btnRun = new Button { Text = "Ejecutar combinación" };
+        btnCancel = new Button { Text = "Cancelar", Enabled = false };
 
         var actionPanel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
         actionPanel.Controls.Add(btnScanTemplateFields);
         actionPanel.Controls.Add(btnRun);
         actionPanel.Controls.Add(btnCancel);
 
-        AddRow("Actions", actionPanel);
+        AddRow("Acciones", actionPanel);
 
         // Separator row
         root.Controls.Add(new Label { Height = 2, BorderStyle = BorderStyle.Fixed3D, Dock = DockStyle.Fill }, 0, 1);
@@ -197,7 +197,7 @@ public sealed class MainForm : Form
 
         // Add a context menu for copying selected lines
         var logMenu = new ContextMenuStrip();
-        var miCopy = new ToolStripMenuItem("Copy selected");
+        var miCopy = new ToolStripMenuItem("Copiar seleccionados");
         miCopy.Click += (_, __) => CopySelectedLogLinesToClipboard();
         logMenu.Items.Add(miCopy);
 
@@ -206,10 +206,10 @@ public sealed class MainForm : Form
 
         lstLog.ContextMenuStrip = logMenu;
 
-        // Cosmetic: label the FieldX/FieldY dropdowns via ToolTips
+        // Cosmético: etiquetar los desplegables de CampoX/CampoY mediante ToolTips
         var tt = new ToolTip();
-        tt.SetToolTip(cmbFieldX, "FieldX: Excel column used for the first part of the PDF name");
-        tt.SetToolTip(cmbFieldY, "FieldY: Excel column used for the second part of the PDF name");
+        tt.SetToolTip(cmbFieldX, "CampoX: Columna de Excel utilizada para la primera parte del nombre del PDF");
+        tt.SetToolTip(cmbFieldY, "CampoY: Columna de Excel utilizada para la segunda parte del nombre del PDF");
     }
 
     private void WireEvents()
@@ -263,8 +263,8 @@ public sealed class MainForm : Form
         catch (Exception ex)
         {
             MessageBox.Show(
-                "Failed to copy to clipboard.\n\nDetails: " + ex.Message,
-                "Clipboard",
+                "Error al copiar al portapapeles.\n\nDetalles: " + ex.Message,
+                "Portapapeles",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
@@ -314,14 +314,14 @@ public sealed class MainForm : Form
     {
         using var dlg = new OpenFileDialog
         {
-            Filter = "Word Template (*.docx)|*.docx",
-            Title = "Select Word template"
+            Filter = "Plantilla de Word (*.docx)|*.docx",
+            Title = "Seleccionar plantilla de Word"
         };
         if (dlg.ShowDialog(this) == DialogResult.OK)
         {
             txtTemplatePath.Text = dlg.FileName;
             _templateFields.Clear(); // require re-scan if template changed
-            AppendLog($"Template: {dlg.FileName}");
+            AppendLog($"Plantilla: {dlg.FileName}");
             UpdateUiEnabledState();
         }
     }
@@ -330,8 +330,8 @@ public sealed class MainForm : Form
     {
         using var dlg = new OpenFileDialog
         {
-            Filter = "Excel Workbook (*.xlsx)|*.xlsx",
-            Title = "Select Excel file"
+            Filter = "Libro de Excel (*.xlsx)|*.xlsx",
+            Title = "Seleccionar archivo de Excel"
         };
         if (dlg.ShowDialog(this) == DialogResult.OK)
         {
@@ -346,13 +346,13 @@ public sealed class MainForm : Form
     {
         using var dlg = new FolderBrowserDialog
         {
-            Description = "Select output folder for PDFs",
+            Description = "Seleccione la carpeta de salida para los PDFs",
             UseDescriptionForTitle = true
         };
         if (dlg.ShowDialog(this) == DialogResult.OK)
         {
             txtOutputDir.Text = dlg.SelectedPath;
-            AppendLog($"Output: {dlg.SelectedPath}");
+            AppendLog($"Salida: {dlg.SelectedPath}");
             UpdateUiEnabledState();
         }
     }
@@ -368,7 +368,7 @@ public sealed class MainForm : Form
             var path = txtExcelPath.Text;
             if (!File.Exists(path))
             {
-                MessageBox.Show("Please select a valid Excel file.", "Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Por favor, seleccione un archivo de Excel válido.", "Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -380,12 +380,12 @@ public sealed class MainForm : Form
             cmbWorksheet.DataSource = sheets.ToList();
             cmbWorksheet.SelectedIndex = 0;
 
-            AppendLog($"Loaded Excel. Sheets: {sheets.Count}");
+            AppendLog($"Excel cargado. Hojas: {sheets.Count}");
             RefreshHeaders();
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Load Excel failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(ex.Message, "Error al cargar Excel", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         finally
         {
@@ -411,7 +411,7 @@ public sealed class MainForm : Form
                 headerResult: out var headerInfo,
                 userMessage: out var msg))
         {
-            AppendLog("Headers: ERROR -> " + msg);
+            AppendLog("Encabezados: ERROR -> " + msg);
             cmbFieldX.DataSource = null;
             cmbFieldY.DataSource = null;
             UpdateFilenamePreview();
@@ -435,7 +435,7 @@ public sealed class MainForm : Form
         _templateFields.Clear();
         _templateToExcelHeaderMap = new Dictionary<string, string>(StringComparer.Ordinal);
 
-        AppendLog($"Headers loaded. Count: {_headerInfo.Headers.Count}. Header row: {_headerInfo.HeaderRowNumber}");
+        AppendLog($"Encabezados cargados. Cantidad: {_headerInfo.Headers.Count}. Fila de encabezado: {_headerInfo.HeaderRowNumber}");
         UpdateFilenamePreview();
         UpdateUiEnabledState();
     }
@@ -446,7 +446,7 @@ public sealed class MainForm : Form
             cmbFieldX.SelectedItem == null ||
             cmbFieldY.SelectedItem == null)
         {
-            lblFilenamePreview.Text = "Preview: (not ready)";
+            lblFilenamePreview.Text = "Vista previa: (no listo)";
             return;
         }
 
@@ -459,9 +459,9 @@ public sealed class MainForm : Form
             record: fakeRecord,
             fieldXHeader: (string)cmbFieldX.SelectedItem,
             fieldYHeader: (string)cmbFieldY.SelectedItem,
-            emptyFallback: "row_###");
+            emptyFallback: "fila_###");
 
-        lblFilenamePreview.Text = "Preview: " + Path.GetFileName(previewPath);
+        lblFilenamePreview.Text = "Vista previa: " + Path.GetFileName(previewPath);
     }
 
     private void ScanTemplateAndValidate()
@@ -470,17 +470,17 @@ public sealed class MainForm : Form
         {
             if (!TryScanTemplateAndValidate(out var msg))
             {
-                MessageBox.Show(msg, "Template validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                AppendLog("Template validation: ERROR -> " + msg.Replace("\n", " "));
+                MessageBox.Show(msg, "Validación de plantilla", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppendLog("Validación de plantilla: ERROR -> " + msg.Replace("\n", " "));
                 return;
             }
 
-            AppendLog($"Template fields found: {_templateFields.Count}");
-            AppendLog("Template fields validated against Excel headers: OK");
+            AppendLog($"Campos de plantilla encontrados: {_templateFields.Count}");
+            AppendLog("Campos de plantilla validados contra encabezados de Excel: OK");
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Scan template failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(ex.Message, "Error al escanear plantilla", MessageBoxButtons.OK, MessageBoxIcon.Error);
             _templateFields.Clear();
         }
         finally
@@ -493,15 +493,15 @@ public sealed class MainForm : Form
     {
         if (_excel == null || _headerInfo == null)
         {
-            MessageBox.Show("Please load Excel and headers first.", "Run", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Por favor, cargue primero el Excel y los encabezados.", "Ejecutar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
         // Auto-scan + validate (also builds _templateFields and _templateToExcelHeaderMap)
         if (!TryScanTemplateAndValidate(out var validationMsg))
         {
-            MessageBox.Show(validationMsg, "Template validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            AppendLog("Template validation: ERROR -> " + validationMsg.Replace("\n", " "));
+            MessageBox.Show(validationMsg, "Validación de plantilla", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            AppendLog("Validación de plantilla: ERROR -> " + validationMsg.Replace("\n", " "));
             UpdateUiEnabledState();
             return;
         }
@@ -515,13 +515,13 @@ public sealed class MainForm : Form
 
         if (!File.Exists(templatePath))
         {
-            MessageBox.Show("Please select a valid Word template (.docx).", "Run", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Por favor, seleccione una plantilla de Word válida (.docx).", "Ejecutar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
         if (!Directory.Exists(outputDir))
         {
-            MessageBox.Show("Please select a valid output folder.", "Run", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Por favor, seleccione una carpeta de salida válida.", "Ejecutar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -541,7 +541,7 @@ public sealed class MainForm : Form
         progressBar.Maximum = totalEstimate;
 
         _cts = new CancellationTokenSource();
-        AppendLog("Starting merge...");
+        AppendLog("Iniciando combinación...");
 
         var progress = new Progress<MergeProgress>(p =>
         {
@@ -598,13 +598,13 @@ public sealed class MainForm : Form
 
                         ok++;
                         ((IProgress<MergeProgress>)progress).Report(
-                            new MergeProgress(done, totalEstimate, $"Row {rowNumber}: OK -> {Path.GetFileName(pdfPath)}"));
+                            new MergeProgress(done, totalEstimate, $"Fila {rowNumber}: OK -> {Path.GetFileName(pdfPath)}"));
                     }
                     catch (Exception ex)
                     {
                         fail++;
                         ((IProgress<MergeProgress>)progress).Report(
-                            new MergeProgress(done, totalEstimate, $"Row {rowNumber}: ERROR -> {ex.Message}"));
+                            new MergeProgress(done, totalEstimate, $"Fila {rowNumber}: ERROR -> {ex.Message}"));
                         // continue
                     }
 
@@ -612,16 +612,16 @@ public sealed class MainForm : Form
                 }
 
                 ((IProgress<MergeProgress>)progress).Report(
-                    new MergeProgress(totalEstimate, totalEstimate, $"Done. OK: {ok}, Failed: {fail}."));
+                    new MergeProgress(totalEstimate, totalEstimate, $"Completado. OK: {ok}, Errores: {fail}."));
             }, _cts.Token);
         }
         catch (OperationCanceledException)
         {
-            AppendLog("Canceled.");
+            AppendLog("Cancelado.");
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Run failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(ex.Message, "Error en la ejecución", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         finally
         {
@@ -645,14 +645,14 @@ public sealed class MainForm : Form
 
         if (_headerInfo == null)
         {
-            userMessage = "Please load Excel headers first.";
+            userMessage = "Por favor, cargue primero los encabezados de Excel.";
             return false;
         }
 
         var templatePath = txtTemplatePath.Text;
         if (!File.Exists(templatePath))
         {
-            userMessage = "Please select a valid Word template (.docx).";
+            userMessage = "Por favor, seleccione una plantilla de Word válida (.docx).";
             return false;
         }
 
@@ -661,7 +661,7 @@ public sealed class MainForm : Form
 
         if (_templateFields.Count == 0)
         {
-            userMessage = "No MERGEFIELD fields were found in the Word template.";
+            userMessage = "No se encontraron campos MERGEFIELD en la plantilla de Word.";
             return false;
         }
 
@@ -681,10 +681,10 @@ public sealed class MainForm : Form
             if (missing.Count > 0)
             {
                 userMessage =
-                    "The Word template contains merge fields that are missing in the Excel header row " +
-                    "(spaces/underscores are treated as equivalent, but case must match):\n\n" +
+                    "La plantilla de Word contiene campos de combinación que faltan en la fila de encabezado de Excel " +
+                    "(los espacios y guiones bajos se tratan como equivalentes, pero las mayúsculas/minúsculas deben coincidir):\n\n" +
                     string.Join("\n", missing.Select(m => $" - {m}")) +
-                    "\n\nFix: Add these columns to the Excel header row (exact spelling required).";
+                    "\n\nSolución: Agregue estas columnas a la fila de encabezado de Excel (se requiere la ortografía exacta).";
                 _templateFields.Clear();
                 _templateToExcelHeaderMap = new Dictionary<string, string>(StringComparer.Ordinal);
                 return false;

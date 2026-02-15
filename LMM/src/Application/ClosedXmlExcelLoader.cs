@@ -11,7 +11,7 @@ public static class ClosedXmlExcelLoader
 
         var sheetNames = wb.Worksheets.Select(ws => ws.Name).ToList();
         if (sheetNames.Count == 0)
-            throw new InvalidOperationException("The Excel file contains no worksheets.");
+            throw new InvalidOperationException("El archivo Excel no contiene hojas de trabajo.");
 
         return new ExcelLoadResult(
             WorksheetNames: sheetNames,

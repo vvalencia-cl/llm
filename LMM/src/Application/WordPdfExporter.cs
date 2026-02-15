@@ -20,10 +20,10 @@ public sealed class WordPdfExporter : IDisposable
     public void ExportDocxToPdf(string docxPath, string pdfPath)
     {
         if (_disposed) throw new ObjectDisposedException(nameof(WordPdfExporter));
-        if (_wordApp == null) throw new InvalidOperationException("Word application is not initialized.");
+        if (_wordApp == null) throw new InvalidOperationException("La aplicación Word no está inicializada.");
 
         if (!File.Exists(docxPath))
-            throw new FileNotFoundException("DOCX not found.", docxPath);
+            throw new FileNotFoundException("Archivo DOCX no encontrado.", docxPath);
 
         Directory.CreateDirectory(Path.GetDirectoryName(pdfPath)!);
 

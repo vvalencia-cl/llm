@@ -11,7 +11,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
     public ClosedXmlDataSourceService(string xlsxPath)
     {
         if (string.IsNullOrWhiteSpace(xlsxPath))
-            throw new ArgumentException("Excel path is required.", nameof(xlsxPath));
+            throw new ArgumentException("La ruta del archivo Excel es obligatoria.", nameof(xlsxPath));
 
         _workbook = new XLWorkbook(xlsxPath);
     }
@@ -22,7 +22,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
 
         var names = _workbook.Worksheets.Select(w => w.Name).ToList();
         if (names.Count == 0)
-            throw new InvalidOperationException("The Excel file contains no worksheets.");
+            throw new InvalidOperationException("El archivo Excel no contiene hojas de trabajo.");
 
         return names;
     }
@@ -37,13 +37,13 @@ public sealed class ClosedXmlDataSourceService : IDisposable
         ThrowIfDisposed();
 
         if (headerRowNumber < 1)
-            throw new ArgumentOutOfRangeException(nameof(headerRowNumber), "Header row must be >= 1.");
+            throw new ArgumentOutOfRangeException(nameof(headerRowNumber), "La fila de encabezado debe ser >= 1.");
 
         var ws = GetWorksheetOrThrow(worksheetName);
 
         var usedRange = ws.RangeUsed();
         if (usedRange == null)
-            throw new InvalidOperationException($"Worksheet '{worksheetName}' is empty.");
+            throw new InvalidOperationException($"La hoja de trabajo '{worksheetName}' está vacía.");
 
         var firstUsedCol = usedRange.RangeAddress.FirstAddress.ColumnNumber;
         var lastUsedCol = usedRange.RangeAddress.LastAddress.ColumnNumber;
@@ -51,7 +51,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
 
         if (headerRowNumber > lastUsedRow)
             throw new InvalidOperationException(
-                $"Header row {headerRowNumber} is below the last used row ({lastUsedRow}) in '{worksheetName}'.");
+                $"La fila de encabezado {headerRowNumber} está por debajo de la última fila utilizada ({lastUsedRow}) en '{worksheetName}'.");
 
         var headers = new List<string>();
         for (int col = firstUsedCol; col <= lastUsedCol; col++)
@@ -67,7 +67,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
 
         if (headers.All(string.IsNullOrWhiteSpace))
             throw new InvalidOperationException(
-                $"Header row {headerRowNumber} in '{worksheetName}' does not contain any header text.");
+                $"La fila de encabezado {headerRowNumber} en '{worksheetName}' no contiene ningún texto de encabezado.");
 
         if (errorOnEmptyHeader)
         {
@@ -80,9 +80,9 @@ public sealed class ClosedXmlDataSourceService : IDisposable
             if (emptyPositions.Count > 0)
             {
                 throw new InvalidOperationException(
-                    "The header row contains empty column names at positions: " +
+                    "La fila de encabezado contiene nombres de columna vacíos en las posiciones: " +
                     string.Join(", ", emptyPositions) +
-                    ". Please fill them in or reduce the used range.");
+                    ". Por favor, rellénelos o reduzca el rango utilizado.");
             }
         }
 
@@ -99,9 +99,9 @@ public sealed class ClosedXmlDataSourceService : IDisposable
             if (duplicates.Count > 0)
             {
                 throw new InvalidOperationException(
-                    "Duplicate header names found (exact match): " +
+                    "Se encontraron nombres de encabezado duplicados (coincidencia exacta): " +
                     string.Join(", ", duplicates) +
-                    ". Header names must be unique.");
+                    ". Los nombres de los encabezados deben ser únicos.");
             }
         }
 
@@ -175,19 +175,19 @@ public sealed class ClosedXmlDataSourceService : IDisposable
 
         if (_disposed)
         {
-            userMessage = "Excel file is not loaded (internal state disposed). Please re-select the Excel file.";
+            userMessage = "El archivo Excel no está cargado (estado interno liberado). Por favor, vuelva a seleccionar el archivo Excel.";
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(worksheetName))
         {
-            userMessage = "Please select a worksheet.";
+            userMessage = "Por favor, seleccione una hoja de trabajo.";
             return false;
         }
 
         if (headerRowNumber < 1)
         {
-            userMessage = "Header row must be 1 or greater.";
+            userMessage = "La fila de encabezado debe ser 1 o superior.";
             return false;
         }
 
@@ -198,7 +198,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
             var usedRange = ws.RangeUsed();
             if (usedRange == null)
             {
-                userMessage = $"Worksheet '{worksheetName}' is empty.";
+                userMessage = $"La hoja de trabajo '{worksheetName}' está vacía.";
                 return false;
             }
 
@@ -209,8 +209,8 @@ public sealed class ClosedXmlDataSourceService : IDisposable
             if (headerRowNumber > lastUsedRow)
             {
                 userMessage =
-                    $"Header row {headerRowNumber} is below the last used row ({lastUsedRow}) " +
-                    $"in worksheet '{worksheetName}'.";
+                    $"La fila de encabezado {headerRowNumber} está por debajo de la última fila utilizada ({lastUsedRow}) " +
+                    $"en la hoja de trabajo '{worksheetName}'.";
                 return false;
             }
 
@@ -228,7 +228,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
             if (headers.All(string.IsNullOrWhiteSpace))
             {
                 userMessage =
-                    $"Header row {headerRowNumber} in worksheet '{worksheetName}' does not contain any header text.";
+                    $"La fila de encabezado {headerRowNumber} en la hoja de trabajo '{worksheetName}' no contiene ningún texto de encabezado.";
                 return false;
             }
 
@@ -243,9 +243,9 @@ public sealed class ClosedXmlDataSourceService : IDisposable
                 if (emptyPositions.Count > 0)
                 {
                     userMessage =
-                        "The header row contains empty column names at positions: " +
+                        "La fila de encabezado contiene nombres de columna vacíos en las posiciones: " +
                         string.Join(", ", emptyPositions) +
-                        ". Please fill them in or reduce the used range.";
+                        ". Por favor, rellénelos o reduzca el rango utilizado.";
                     return false;
                 }
             }
@@ -263,8 +263,8 @@ public sealed class ClosedXmlDataSourceService : IDisposable
                 if (duplicates.Count > 0)
                 {
                     userMessage =
-                        "Duplicate header names found: " + string.Join(", ", duplicates) + ". " +
-                        "Header names must be unique.";
+                        "Se encontraron nombres de encabezado duplicados: " + string.Join(", ", duplicates) + ". " +
+                        "Los nombres de los encabezados deben ser únicos.";
                     return false;
                 }
             }
@@ -281,9 +281,9 @@ public sealed class ClosedXmlDataSourceService : IDisposable
         {
             // Unexpected failure (file issue, invalid workbook, etc.)
             userMessage =
-                "Failed to read headers from the Excel file. " +
-                "Please ensure the file is a valid .xlsx and is not locked.\n\n" +
-                "Details: " + ex.Message;
+                "Error al leer los encabezados del archivo Excel. " +
+                "Por favor, asegúrese de que el archivo sea un .xlsx válido y no esté bloqueado.\n\n" +
+                "Detalles: " + ex.Message;
 
             return false;
         }
@@ -337,10 +337,10 @@ public sealed class ClosedXmlDataSourceService : IDisposable
     private IXLWorksheet GetWorksheetOrThrow(string worksheetName)
     {
         if (string.IsNullOrWhiteSpace(worksheetName))
-            throw new ArgumentException("Worksheet name is required.", nameof(worksheetName));
+            throw new ArgumentException("El nombre de la hoja de trabajo es obligatorio.", nameof(worksheetName));
 
         if (!_workbook.Worksheets.TryGetWorksheet(worksheetName, out var ws))
-            throw new InvalidOperationException($"Worksheet '{worksheetName}' was not found in the workbook.");
+            throw new InvalidOperationException($"La hoja de trabajo '{worksheetName}' no se encontró en el libro.");
 
         return ws;
     }

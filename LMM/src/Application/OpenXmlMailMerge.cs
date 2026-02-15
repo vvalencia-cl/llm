@@ -17,7 +17,7 @@ public static class OpenXmlMailMerge
         IReadOnlyDictionary<string, string?> values)
     {
         if (doc?.MainDocumentPart?.Document?.Body == null)
-            throw new ArgumentException("Invalid document: MainDocumentPart/Body is missing.");
+            throw new ArgumentException("Documento inválido: Falta el MainDocumentPart/Body.");
 
         var body = doc.MainDocumentPart.Document.Body;
 

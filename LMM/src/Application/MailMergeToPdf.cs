@@ -11,12 +11,12 @@ public static class MailMergeToPdf
         WordPdfExporter wordExporter)
     {
         ArgumentNullException.ThrowIfNull(record);
-        if (string.IsNullOrWhiteSpace(pdfPath)) throw new ArgumentException("PDF path is required.", nameof(pdfPath));
-        if (string.IsNullOrWhiteSpace(templateDocxPath)) throw new ArgumentException("Template path is required.", nameof(templateDocxPath));
+        if (string.IsNullOrWhiteSpace(pdfPath)) throw new ArgumentException("La ruta del PDF es obligatoria.", nameof(pdfPath));
+        if (string.IsNullOrWhiteSpace(templateDocxPath)) throw new ArgumentException("La ruta de la plantilla es obligatoria.", nameof(templateDocxPath));
         ArgumentNullException.ThrowIfNull(wordExporter);
 
         if (!File.Exists(templateDocxPath))
-            throw new FileNotFoundException("Template DOCX not found.", templateDocxPath);
+            throw new FileNotFoundException("Plantilla DOCX no encontrada.", templateDocxPath);
 
         var tempDocxPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.docx");
 

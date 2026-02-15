@@ -19,7 +19,7 @@ public static class WordTemplateFieldScanner
     {
         using var doc = WordprocessingDocument.Open(templateDocxPath, false);
         var body = doc.MainDocumentPart?.Document?.Body
-                   ?? throw new InvalidOperationException("Template DOCX has no main document body.");
+                   ?? throw new InvalidOperationException("La plantilla DOCX no tiene cuerpo de documento principal.");
 
         var result = new HashSet<string>(StringComparer.Ordinal);
 

@@ -169,8 +169,8 @@ public static class HeaderFieldMapper
 
         // Ambiguous mapping: more than one Excel header normalizes to the same key
         throw new InvalidOperationException(
-            $"Ambiguous Excel headers for template field '{originalTemplateField}'. " +
-            $"Multiple Excel headers match after normalization ('{normalizedField}'): {string.Join(", ", candidates)}");
+            $"Encabezados de Excel ambiguos para el campo de plantilla '{originalTemplateField}'. " +
+            $"Múltiples encabezados de Excel coinciden tras la normalización ('{normalizedField}'): {string.Join(", ", candidates)}");
     }
 
     /// <summary>
