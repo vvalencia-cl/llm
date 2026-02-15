@@ -5,12 +5,12 @@ namespace LMM.Application;
 
 public sealed class WordPdfExporter : IDisposable
 {
-    private Word.Application? _wordApp;
-    private bool _disposed;
+    private Word.Application? wordApp;
+    private bool disposed;
 
     public WordPdfExporter()
     {
-        _wordApp = new Word.Application
+        wordApp = new Word.Application
         {
             Visible = false,
             DisplayAlerts = Word.WdAlertLevel.wdAlertsNone
@@ -19,8 +19,8 @@ public sealed class WordPdfExporter : IDisposable
 
     public void ExportDocxToPdf(string docxPath, string pdfPath)
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(WordPdfExporter));
-        if (_wordApp == null) throw new InvalidOperationException("La aplicación Word no está inicializada.");
+        if (disposed) throw new ObjectDisposedException(nameof(WordPdfExporter));
+        if (wordApp == null) throw new InvalidOperationException("La aplicación Word no está inicializada.");
 
         if (!File.Exists(docxPath))
             throw new FileNotFoundException("Archivo DOCX no encontrado.", docxPath);
@@ -30,11 +30,10 @@ public sealed class WordPdfExporter : IDisposable
         Word.Document? doc = null;
         try
         {
-            object missing = Type.Missing;
             object readOnly = true;
             object isVisible = false;
 
-            doc = _wordApp.Documents.Open(
+            doc = wordApp.Documents.Open(
                 FileName: docxPath,
                 ReadOnly: readOnly,
                 Visible: isVisible,
@@ -70,14 +69,14 @@ public sealed class WordPdfExporter : IDisposable
 
     public void Dispose()
     {
-        if (_disposed) return;
-        _disposed = true;
+        if (disposed) return;
+        disposed = true;
 
-        if (_wordApp != null)
+        if (wordApp != null)
         {
-            try { _wordApp.Quit(SaveChanges: false); } catch { /* best-effort */ }
-            ReleaseCom(_wordApp);
-            _wordApp = null;
+            try { wordApp.Quit(SaveChanges: false); } catch { /* best-effort */ }
+            ReleaseCom(wordApp);
+            wordApp = null;
         }
 
         // Helps COM finalize (not strictly required, but reduces zombie WINWORD risk)

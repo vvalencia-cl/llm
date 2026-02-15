@@ -41,7 +41,7 @@ public sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Combinación de correspondencia (Excel → Plantilla Word → PDF)";
+        Text = "Combinación de Correspondencia (Plantilla Word + Excel → PDF)";
         Width = 980;
         Height = 720;
         StartPosition = FormStartPosition.CenterScreen;

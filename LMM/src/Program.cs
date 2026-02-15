@@ -6,7 +6,7 @@ namespace LMM;
 internal static class Program
 {
     [STAThread]
-    static void Main()
+    private static void Main()
     {
         ApplicationConfiguration.Initialize();
         Run(new MainForm());

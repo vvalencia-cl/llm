@@ -5,22 +5,22 @@ namespace LMM.Application;
 
 public sealed class ClosedXmlDataSourceService : IDisposable
 {
-    private readonly XLWorkbook _workbook;
-    private bool _disposed;
+    private readonly XLWorkbook workbook;
+    private bool disposed;
 
     public ClosedXmlDataSourceService(string xlsxPath)
     {
         if (string.IsNullOrWhiteSpace(xlsxPath))
             throw new ArgumentException("La ruta del archivo Excel es obligatoria.", nameof(xlsxPath));
 
-        _workbook = new XLWorkbook(xlsxPath);
+        workbook = new XLWorkbook(xlsxPath);
     }
 
     public IReadOnlyList<string> GetWorksheetNames()
     {
         ThrowIfDisposed();
 
-        var names = _workbook.Worksheets.Select(w => w.Name).ToList();
+        var names = workbook.Worksheets.Select(w => w.Name).ToList();
         if (names.Count == 0)
             throw new InvalidOperationException("El archivo Excel no contiene hojas de trabajo.");
 
@@ -173,7 +173,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
         headerResult = null;
         userMessage = "";
 
-        if (_disposed)
+        if (disposed)
         {
             userMessage = "El archivo Excel no está cargado (estado interno liberado). Por favor, vuelva a seleccionar el archivo Excel.";
             return false;
@@ -339,7 +339,7 @@ public sealed class ClosedXmlDataSourceService : IDisposable
         if (string.IsNullOrWhiteSpace(worksheetName))
             throw new ArgumentException("El nombre de la hoja de trabajo es obligatorio.", nameof(worksheetName));
 
-        if (!_workbook.Worksheets.TryGetWorksheet(worksheetName, out var ws))
+        if (!workbook.Worksheets.TryGetWorksheet(worksheetName, out var ws))
             throw new InvalidOperationException($"La hoja de trabajo '{worksheetName}' no se encontró en el libro.");
 
         return ws;
@@ -347,14 +347,14 @@ public sealed class ClosedXmlDataSourceService : IDisposable
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(ClosedXmlDataSourceService));
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
-        _workbook.Dispose();
-        _disposed = true;
+        if (disposed) return;
+        workbook.Dispose();
+        disposed = true;
     }
 }
