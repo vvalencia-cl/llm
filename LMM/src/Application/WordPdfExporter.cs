@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Word = Microsoft.Office.Interop.Word;
 
-namespace LMM;
+namespace LMM.Application;
 
 public sealed class WordPdfExporter : IDisposable
 {

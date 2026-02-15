@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace LMM;
+namespace LMM.Application;
 
 public static class HeaderFieldMapper
 {

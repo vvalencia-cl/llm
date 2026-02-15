@@ -1,6 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 
-namespace LMM;
+namespace LMM.Application;
 
 public static class MailMergeToPdf
 {
@@ -10,10 +10,10 @@ public static class MailMergeToPdf
         string templateDocxPath,
         WordPdfExporter wordExporter)
     {
-        if (record == null) throw new ArgumentNullException(nameof(record));
+        ArgumentNullException.ThrowIfNull(record);
         if (string.IsNullOrWhiteSpace(pdfPath)) throw new ArgumentException("PDF path is required.", nameof(pdfPath));
         if (string.IsNullOrWhiteSpace(templateDocxPath)) throw new ArgumentException("Template path is required.", nameof(templateDocxPath));
-        if (wordExporter == null) throw new ArgumentNullException(nameof(wordExporter));
+        ArgumentNullException.ThrowIfNull(wordExporter);
 
         if (!File.Exists(templateDocxPath))
             throw new FileNotFoundException("Template DOCX not found.", templateDocxPath);

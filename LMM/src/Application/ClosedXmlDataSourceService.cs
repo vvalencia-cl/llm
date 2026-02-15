@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using LMM.Domain.Dto;
 
-namespace LMM;
+namespace LMM.Application;
 
 public sealed class ClosedXmlDataSourceService : IDisposable
 {

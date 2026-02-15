@@ -1,6 +1,7 @@
-﻿using LMM.Domain.Dto;
+﻿using LMM.Application;
+using LMM.Domain.Dto;
 
-namespace LMM;
+namespace LMM.UI;
 
 public sealed class MainForm : Form
 {

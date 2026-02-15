@@ -1,6 +1,6 @@
 ﻿using LMM.Domain.Dto;
 
-namespace LMM;
+namespace LMM.Application;
 
 public static class MergeRunner
 {

@@ -1,3 +1,6 @@
+using LMM.UI;
+using static System.Windows.Forms.Application;
+
 namespace LMM;
 
 internal static class Program
@@ -6,6 +9,6 @@ internal static class Program
     static void Main()
     {
         ApplicationConfiguration.Initialize();
-        Application.Run(new MainForm());
+        Run(new MainForm());
     }
 }
