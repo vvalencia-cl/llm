@@ -5,9 +5,11 @@ public static class PdfFilenameBuilder
     public static string BuildPdfPath(
         string outputDirectory,
         Dictionary<string, string> record,
-        string firstFieldHeader,
-        string secondFieldHeader,
+        string? prefix = null,
+        string? firstFieldHeader = null,
+        string? secondFieldHeader = null,
         string? thirdFieldHeader = null,
+        string? postfix = null,
         string separator = "_",
         string emptyFallback = "row") // used only if all parts become empty after sanitization
     {
@@ -20,27 +22,34 @@ public static class PdfFilenameBuilder
         if (record == null)
             throw new ArgumentNullException(nameof(record));
 
-        if (string.IsNullOrWhiteSpace(firstFieldHeader))
-            throw new ArgumentException("El encabezado del FirstField es obligatorio.", nameof(firstFieldHeader));
+        var parts = new List<string>(capacity: 5);
 
-        if (string.IsNullOrWhiteSpace(secondFieldHeader))
-            throw new ArgumentException("El encabezado del SecondField es obligatorio.", nameof(secondFieldHeader));
+        if (!string.IsNullOrWhiteSpace(prefix))
+            parts.Add(SanitizeFilenamePart(prefix));
 
-        var firstRaw = record.TryGetValue(firstFieldHeader, out var v1) ? (v1 ?? "") : "";
-        var secondRaw = record.TryGetValue(secondFieldHeader, out var v2) ? (v2 ?? "") : "";
+        if (!string.IsNullOrWhiteSpace(firstFieldHeader))
+        {
+            var firstRaw = record.TryGetValue(firstFieldHeader, out var v1) ? (v1 ?? "") : "";
+            var first = SanitizeFilenamePart(firstRaw);
+            if (!string.IsNullOrEmpty(first)) parts.Add(first);
+        }
 
-        var thirdRaw = "";
+        if (!string.IsNullOrWhiteSpace(secondFieldHeader))
+        {
+            var secondRaw = record.TryGetValue(secondFieldHeader, out var v2) ? (v2 ?? "") : "";
+            var second = SanitizeFilenamePart(secondRaw);
+            if (!string.IsNullOrEmpty(second)) parts.Add(second);
+        }
+
         if (!string.IsNullOrWhiteSpace(thirdFieldHeader))
-            thirdRaw = record.TryGetValue(thirdFieldHeader, out var v3) ? (v3 ?? "") : "";
+        {
+            var thirdRaw = record.TryGetValue(thirdFieldHeader, out var v3) ? (v3 ?? "") : "";
+            var third = SanitizeFilenamePart(thirdRaw);
+            if (!string.IsNullOrEmpty(third)) parts.Add(third);
+        }
 
-        var first = SanitizeFilenamePart(firstRaw);
-        var second = SanitizeFilenamePart(secondRaw);
-        var third = SanitizeFilenamePart(thirdRaw);
-
-        var parts = new List<string>(capacity: 3);
-        if (!string.IsNullOrEmpty(first)) parts.Add(first);
-        if (!string.IsNullOrEmpty(second)) parts.Add(second);
-        if (!string.IsNullOrEmpty(third)) parts.Add(third);
+        if (!string.IsNullOrWhiteSpace(postfix))
+            parts.Add(SanitizeFilenamePart(postfix));
 
         var baseName = parts.Count > 0 ? string.Join(separator, parts) : emptyFallback;
 

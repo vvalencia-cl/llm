@@ -20,6 +20,11 @@ public sealed class MainForm : Form
     private ComboBox cmbFirstField = null!;
     private ComboBox cmbSecondField = null!;
     private ComboBox cmbThirdField = null!;
+
+    private TextBox txtPrefix = null!;
+    private TextBox txtPostfix = null!;
+    private TextBox txtSeparator = null!;
+
     private Label lblFilenamePreview = null!;
 
     private TextBox txtOutputDir = null!;
@@ -39,7 +44,7 @@ public sealed class MainForm : Form
     private Dictionary<string, string> _templateToExcelHeaderMap = new(StringComparer.Ordinal);
     private CancellationTokenSource? _cts;
 
-    private const string OptionalThirdFieldNoneOption = "(sin Tercer Campo)";
+    private const string OptionalFieldNoneOption = "(Ninguno)";
 
     public MainForm()
     {
@@ -96,7 +101,7 @@ public sealed class MainForm : Form
         root.Controls.Add(inputs, 0, 0);
 
         // Row helper
-        int r = 0;
+        var r = 0;
 
         // Template
         txtTemplatePath = new TextBox { PlaceholderText = "Seleccione la plantilla de Word (.docx)..." };
@@ -109,36 +114,50 @@ public sealed class MainForm : Form
 
         AddRow("Archivo Excel", txtExcelPath, btnBrowseExcel, btnLoadExcel);
 
-        btnLoadExcel = new Button { Text = "Analizar Excel" };
+        btnLoadExcel = new Button { Text = "Cargar Datos" };
         AddRow("Analizar", btnLoadExcel);
+
+        AddDivisoryLine();
 
         // Worksheet + header row
         cmbWorksheet = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         numHeaderRow = new NumericUpDown { Minimum = 1, Maximum = 100000, Value = 1 };
         btnRefreshHeaders = new Button { Text = "Refrescar columnas de Excel" };
 
-        var wsPanel = new TableLayoutPanel { ColumnCount = 3, Dock = DockStyle.Fill, AutoSize = true };
-        wsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70));
-        wsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
-        wsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 0));
-        wsPanel.Controls.Add(cmbWorksheet, 0, 0);
-        wsPanel.Controls.Add(numHeaderRow, 1, 0);
+        var excelOptionsPanel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
+        excelOptionsPanel.Name = "Opciones de Excel";
+        excelOptionsPanel.Controls.Add(new Label { Text = "Hoja de Excel: ", AutoSize = true });
+        excelOptionsPanel.Controls.Add(cmbWorksheet);
+        excelOptionsPanel.Controls.Add(new Label { Text = "Nº Fila con Encabezados: ", AutoSize = true });
+        excelOptionsPanel.Controls.Add(numHeaderRow);
+        excelOptionsPanel.Controls.Add(btnRefreshHeaders);
 
-        AddRow2("Hoja de planilla con datos", wsPanel, "Nº Fila con encabezados", numHeaderRow);
+        AddRow("Opciones de Excel", excelOptionsPanel);
 
-        AddRow("Acciones Excel", btnRefreshHeaders);
+        AddDivisoryLine();
 
         cmbFirstField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         cmbSecondField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         cmbThirdField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
 
-        var fieldPanel = new TableLayoutPanel { ColumnCount = 3, Dock = DockStyle.Fill, AutoSize = true };
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333f));
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333f));
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333f));
-        fieldPanel.Controls.Add(cmbFirstField, 0, 0);
-        fieldPanel.Controls.Add(cmbSecondField, 1, 0);
-        fieldPanel.Controls.Add(cmbThirdField, 2, 0);
+        txtPrefix = new TextBox { PlaceholderText = "Prefijo" };
+        txtPostfix = new TextBox { PlaceholderText = "Sufijo" };
+        txtSeparator = new TextBox { PlaceholderText = "Sep.", Text = "_" };
+
+        var fieldPanel = new TableLayoutPanel { ColumnCount = 6, Dock = DockStyle.Fill, AutoSize = true };
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15)); // prefix
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25)); // first
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10)); // separator
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20)); // second
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20)); // third
+        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10)); // postfix
+
+        fieldPanel.Controls.Add(txtPrefix, 0, 0);
+        fieldPanel.Controls.Add(cmbFirstField, 1, 0);
+        fieldPanel.Controls.Add(txtSeparator, 2, 0);
+        fieldPanel.Controls.Add(cmbSecondField, 3, 0);
+        fieldPanel.Controls.Add(cmbThirdField, 4, 0);
+        fieldPanel.Controls.Add(txtPostfix, 5, 0);
 
         AddRow("Nombre de archivo", fieldPanel);
 
@@ -152,7 +171,7 @@ public sealed class MainForm : Form
         AddRow("Carpeta de salida", txtOutputDir, btnBrowseOutputDir);
 
         // Actions row
-        btnScanTemplateFields = new Button { Text = "Validar campos plantilla"};
+        btnScanTemplateFields = new Button { Text = "Validar campos plantilla" };
         btnRun = new Button { Text = "Ejecutar combinación" };
         btnCancel = new Button { Text = "Cancelar", Enabled = false };
 
@@ -160,12 +179,12 @@ public sealed class MainForm : Form
         btnScanTemplateFields.AutoSize = true;
         btnRun.AutoSize = true;
         btnCancel.AutoSize = true;
-        
+
         var actionPanel = new FlowLayoutPanel
         {
             AutoSize = true,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            WrapContents = true,                  // key: at 150% it may need to wrap
+            WrapContents = true, // key: at 150% it may need to wrap
             FlowDirection = FlowDirection.LeftToRight,
             Margin = Padding.Empty,
             Padding = Padding.Empty
@@ -221,6 +240,16 @@ public sealed class MainForm : Form
         tt.SetToolTip(cmbThirdField,
             "Tercer Campo (opcional): si se elige, se agrega como tercera parte del nombre del PDF");
         return;
+
+        void AddDivisoryLine()
+        {
+            var divisoryLabel = new Label { Text = "", Height = 1, BackColor = Color.Black, Dock = DockStyle.Fill };
+            inputs.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            inputs.Controls.Add(divisoryLabel);
+            inputs.SetCellPosition(divisoryLabel, new TableLayoutPanelCellPosition(0, r));
+            inputs.SetColumnSpan(divisoryLabel, 3);
+            r++;
+        }
 
         void AddRow(string label, Control main, Control? b1 = null, Control? b2 = null)
         {
@@ -289,83 +318,6 @@ public sealed class MainForm : Form
 
             r++;
         }
-
-        void AddRow2(string label, Control main, string secondLabel, Control b1)
-        {
-            inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
-            // Build a row panel that spans ALL 4 columns of `inputs`,
-            // and splits the available width 50% / 50%.
-            var rowPanel = new TableLayoutPanel
-            {
-                ColumnCount = 2,
-                Dock = DockStyle.Fill,
-                AutoSize = true,
-                Margin = Padding.Empty,
-                Padding = Padding.Empty,
-            };
-            rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-            rowPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-
-            // Left half: [label][main]
-            var leftPanel = new TableLayoutPanel
-            {
-                ColumnCount = 2,
-                Dock = DockStyle.Fill,
-                AutoSize = true,
-                Margin = Padding.Empty,
-                Padding = Padding.Empty,
-            };
-            leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            leftPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-
-            leftPanel.Controls.Add(
-                new Label
-                {
-                    Text = label,
-                    AutoSize = true,
-                    Anchor = AnchorStyles.Left,
-                    Padding = new Padding(0, 6, 0, 0)
-                },
-                0, 0);
-
-            main.Dock = DockStyle.Fill;
-            leftPanel.Controls.Add(main, 1, 0);
-
-            // Right half: [secondLabel][b1]
-            var rightPanel = new TableLayoutPanel
-            {
-                ColumnCount = 2,
-                Dock = DockStyle.Fill,
-                AutoSize = true,
-                Margin = Padding.Empty,
-                Padding = Padding.Empty,
-            };
-            rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            rightPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-
-            rightPanel.Controls.Add(
-                new Label
-                {
-                    Text = secondLabel,
-                    AutoSize = true,
-                    Anchor = AnchorStyles.Left,
-                    Padding = new Padding(0, 6, 0, 0)
-                },
-                0, 0);
-
-            b1.Dock = DockStyle.Fill;
-            rightPanel.Controls.Add(b1, 1, 0);
-
-            rowPanel.Controls.Add(leftPanel, 0, 0);
-            rowPanel.Controls.Add(rightPanel, 1, 0);
-
-            // Put this row panel into `inputs` spanning all columns
-            inputs.Controls.Add(rowPanel, 0, r);
-            inputs.SetColumnSpan(rowPanel, 4);
-
-            r++;
-        }
     }
 
     private void WireEvents()
@@ -421,6 +373,9 @@ public sealed class MainForm : Form
         cmbFirstField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
         cmbSecondField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
         cmbThirdField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
+        txtPrefix.TextChanged += (_, __) => UpdateFilenamePreview();
+        txtPostfix.TextChanged += (_, __) => UpdateFilenamePreview();
+        txtSeparator.TextChanged += (_, __) => UpdateFilenamePreview();
         txtOutputDir.TextChanged += (_, __) => UpdateFilenamePreview();
 
         btnScanTemplateFields.Click += (_, __) => ScanTemplateAndValidate();
@@ -477,6 +432,9 @@ public sealed class MainForm : Form
         cmbFirstField.Enabled = headersReady;
         cmbSecondField.Enabled = headersReady;
         cmbThirdField.Enabled = headersReady;
+        txtPrefix.Enabled = headersReady;
+        txtPostfix.Enabled = headersReady;
+        txtSeparator.Enabled = headersReady;
 
         // Scan button can remain (optional tool), but is not required for running
         btnScanTemplateFields.Enabled = File.Exists(txtTemplatePath.Text) && headersReady;
@@ -487,7 +445,6 @@ public sealed class MainForm : Form
             headersReady &&
             Directory.Exists(txtOutputDir.Text) &&
             cmbFirstField.SelectedItem != null &&
-            cmbSecondField.SelectedItem != null &&
             (_cts == null);
 
         btnRun.Enabled = canRun;
@@ -564,7 +521,8 @@ public sealed class MainForm : Form
             var path = txtExcelPath.Text;
             if (!File.Exists(path))
             {
-                MessageBox.Show("Por favor, seleccione un archivo de Excel válido.", "Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Por favor, seleccione un archivo de Excel válido.", "Excel", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -618,16 +576,19 @@ public sealed class MainForm : Form
 
         var headers = _headerInfo.Headers.ToList();
         cmbFirstField.DataSource = headers.ToList();
-        cmbSecondField.DataSource = headers.ToList();
 
-        var thirdOptions = new List<string>(capacity: headers.Count + 1) { OptionalThirdFieldNoneOption };
+        var secondOptions = new List<string>(capacity: headers.Count + 1) { OptionalFieldNoneOption };
+        secondOptions.AddRange(headers);
+        cmbSecondField.DataSource = secondOptions;
+
+        var thirdOptions = new List<string>(capacity: headers.Count + 1) { OptionalFieldNoneOption };
         thirdOptions.AddRange(headers);
         cmbThirdField.DataSource = thirdOptions;
 
         if (headers.Count > 0)
         {
             cmbFirstField.SelectedIndex = 0;
-            cmbSecondField.SelectedIndex = Math.Min(1, headers.Count - 1);
+            cmbSecondField.SelectedIndex = 0; // none by default or maybe headers.Count > 1 ? 2 : 0
             cmbThirdField.SelectedIndex = 0; // none by default
         }
 
@@ -644,8 +605,7 @@ public sealed class MainForm : Form
     private void UpdateFilenamePreview()
     {
         if (_headerInfo == null ||
-            cmbFirstField.SelectedItem == null ||
-            cmbSecondField.SelectedItem == null)
+            cmbFirstField.SelectedItem == null)
         {
             lblFilenamePreview.Text = "";
             return;
@@ -655,8 +615,12 @@ public sealed class MainForm : Form
             .Where(h => !string.IsNullOrWhiteSpace(h))
             .ToDictionary(h => h, h => $"<{h}>", StringComparer.Ordinal);
 
+        var secondHeader = (string?)cmbSecondField.SelectedItem;
+        if (string.Equals(secondHeader, OptionalFieldNoneOption, StringComparison.Ordinal))
+            secondHeader = null;
+
         var thirdHeader = (string?)cmbThirdField.SelectedItem;
-        if (string.Equals(thirdHeader, OptionalThirdFieldNoneOption, StringComparison.Ordinal))
+        if (string.Equals(thirdHeader, OptionalFieldNoneOption, StringComparison.Ordinal))
             thirdHeader = null;
 
         var previewPath = PdfFilenameBuilder.BuildPdfPath(
@@ -664,9 +628,12 @@ public sealed class MainForm : Form
                 ? txtOutputDir.Text
                 : Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
             record: fakeRecord,
+            prefix: txtPrefix.Text,
             firstFieldHeader: (string)cmbFirstField.SelectedItem,
-            secondFieldHeader: (string)cmbSecondField.SelectedItem,
+            secondFieldHeader: secondHeader,
             thirdFieldHeader: thirdHeader,
+            postfix: txtPostfix.Text,
+            separator: txtSeparator.Text,
             emptyFallback: "fila_###");
 
         lblFilenamePreview.Text = Path.GetFileName(previewPath);
@@ -720,11 +687,18 @@ public sealed class MainForm : Form
         var worksheetName = (string)cmbWorksheet.SelectedItem!;
         var headerRow = (int)numHeaderRow.Value;
         var fieldXHeader = (string)cmbFirstField.SelectedItem!;
-        var fieldYHeader = (string)cmbSecondField.SelectedItem!;
+
+        var secondHeader = (string?)cmbSecondField.SelectedItem;
+        if (string.Equals(secondHeader, OptionalFieldNoneOption, StringComparison.Ordinal))
+            secondHeader = null;
 
         var thirdHeader = (string?)cmbThirdField.SelectedItem;
-        if (string.Equals(thirdHeader, OptionalThirdFieldNoneOption, StringComparison.Ordinal))
+        if (string.Equals(thirdHeader, OptionalFieldNoneOption, StringComparison.Ordinal))
             thirdHeader = null;
+
+        var prefixText = txtPrefix.Text;
+        var postfixText = txtPostfix.Text;
+        var separatorText = txtSeparator.Text;
 
         if (!File.Exists(templatePath))
         {
@@ -790,9 +764,12 @@ public sealed class MainForm : Form
                         var pdfPath = PdfFilenameBuilder.BuildPdfPath(
                             outputDirectory: outputDir,
                             record: excelRecord,
+                            prefix: prefixText,
                             firstFieldHeader: fieldXHeader,
-                            secondFieldHeader: fieldYHeader,
+                            secondFieldHeader: secondHeader,
                             thirdFieldHeader: thirdHeader,
+                            postfix: postfixText,
+                            separator: separatorText,
                             emptyFallback: $"row_{rowNumber}");
 
                         // Overwrite behavior
@@ -830,6 +807,10 @@ public sealed class MainForm : Form
 
                 ((IProgress<MergeProgress>)progress).Report(
                     new MergeProgress(totalEstimate, totalEstimate, $"Completado. OK: {ok}, Errores: {fail}."));
+
+                // Show alert after process is completed
+                Invoke(() => MessageBox.Show($"Proceso finalizado.\nOK: {ok}\nErrores: {fail}",
+                    "Combinación completada", MessageBoxButtons.OK, MessageBoxIcon.Information));
             }, _cts.Token);
         }
         catch (OperationCanceledException)
@@ -838,6 +819,7 @@ public sealed class MainForm : Form
         }
         catch (Exception ex)
         {
+            AppendLog("Error en la ejecución: " + ex.Message);
             MessageBox.Show(ex.Message, "Error en la ejecución", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         finally
