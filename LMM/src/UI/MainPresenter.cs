@@ -11,6 +11,7 @@ public sealed class MainPresenter
     private List<string> _templateFields = [];
     private Dictionary<string, string> _templateToExcelHeaderMap = new(StringComparer.Ordinal);
     private CancellationTokenSource? _cts;
+    private bool _mergeFinished;
 
     private const string OptionalFieldNoneOption = "(Ninguno)";
 
@@ -31,6 +32,7 @@ public sealed class MainPresenter
         _view.ScanTemplateClicked += (s, e) => ScanTemplateAndValidate();
         _view.RunClicked += async (s, e) => await RunMergeAsync();
         _view.CancelClicked += (s, e) => _cts?.Cancel();
+        _view.OpenOutputDirClicked += (s, e) => OpenOutputDir();
 
         _view.TemplatePathChanged += (s, e) => { _templateFields.Clear(); UpdateState(); };
         _view.ExcelPathChanged += (s, e) => { _templateFields.Clear(); UpdateState(); };
@@ -46,7 +48,8 @@ public sealed class MainPresenter
             HeadersReady: _headerInfo?.Headers?.Count > 0,
             TemplateExists: File.Exists(_view.TemplatePath),
             OutputDirExists: Directory.Exists(_view.OutputDir),
-            IsProcessing: _cts != null
+            IsProcessing: _cts != null,
+            MergeFinished: _mergeFinished
         );
         _view.ApplyState(state);
     }
@@ -300,6 +303,8 @@ public sealed class MainPresenter
                 // Alert in UI thread
                 Task.Run(() => _view.ShowInfo("Combinación completada", $"Proceso finalizado.\nOK: {ok}\nErrores: {fail}"));
             }, _cts.Token);
+
+            _mergeFinished = true;
         }
         catch (OperationCanceledException)
         {
@@ -409,5 +414,23 @@ public sealed class MainPresenter
         _cts?.Cancel();
         _cts?.Dispose();
         _excel?.Dispose();
+    }
+
+    private void OpenOutputDir()
+    {
+        var path = _view.OutputDir;
+        if (Directory.Exists(path))
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true,
+                Verb = "open"
+            });
+        }
+        else
+        {
+            _view.ShowWarning("Abrir carpeta", "La carpeta de salida no existe o no ha sido seleccionada.");
+        }
     }
 }

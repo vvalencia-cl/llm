@@ -109,11 +109,13 @@ partial class MainForm
         _btnScan = new Button { Text = "Validar campos plantilla", AutoSize = true };
         _btnRun = new Button { Text = "Ejecutar combinación", AutoSize = true };
         _btnCancel = new Button { Text = "Cancelar", Enabled = false, AutoSize = true };
+        _btnOpenOutputDir = new Button { Text = "Abrir carpeta de Salida", Enabled = false, AutoSize = true };
 
         actionPanel = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Dock = DockStyle.Fill };
         actionPanel.Controls.Add(_btnScan);
         actionPanel.Controls.Add(_btnRun);
         actionPanel.Controls.Add(_btnCancel);
+        actionPanel.Controls.Add(_btnOpenOutputDir);
 
         inputs.Controls.Add(new Label { Text = "Acciones", AutoSize = true, Anchor = AnchorStyles.Left }, 0, r);
         inputs.Controls.Add(actionPanel, 1, r);

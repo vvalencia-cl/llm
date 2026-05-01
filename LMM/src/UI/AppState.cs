@@ -8,11 +8,13 @@ public sealed record AppState(
     bool HeadersReady,
     bool TemplateExists,
     bool OutputDirExists,
-    bool IsProcessing
+    bool IsProcessing,
+    bool MergeFinished
 )
 {
     public bool CanRefreshHeaders => ExcelLoaded && !IsProcessing;
     public bool CanScanTemplate => TemplateExists && HeadersReady && !IsProcessing;
     public bool CanRun => TemplateExists && ExcelLoaded && HeadersReady && OutputDirExists && !IsProcessing;
     public bool CanCancel => IsProcessing;
+    public bool CanOpenOutputDir => MergeFinished && !IsProcessing;
 }

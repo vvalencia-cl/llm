@@ -17,6 +17,7 @@ public sealed partial class MainForm : Form, IMainView
     private Button _btnScan = null!;
     private Button _btnRun = null!;
     private Button _btnCancel = null!;
+    private Button _btnOpenOutputDir = null!;
     private Button _btnLoadExcel = null!;
 
     private const string OptionalFieldNoneOption = "(Ninguno)";
@@ -68,6 +69,7 @@ public sealed partial class MainForm : Form, IMainView
         _btnScan.Enabled = state.CanScanTemplate;
         _btnRun.Enabled = state.CanRun;
         _btnCancel.Enabled = state.CanCancel;
+        _btnOpenOutputDir.Enabled = state.CanOpenOutputDir;
         
         _btnLoadExcel.Enabled = !state.IsProcessing;
         _fpExcel.Enabled = !state.IsProcessing;
@@ -109,6 +111,7 @@ public sealed partial class MainForm : Form, IMainView
     public event EventHandler ScanTemplateClicked { add => _btnScan.Click += value; remove => _btnScan.Click -= value; }
     public event EventHandler RunClicked { add => _btnRun.Click += value; remove => _btnRun.Click -= value; }
     public event EventHandler CancelClicked { add => _btnCancel.Click += value; remove => _btnCancel.Click -= value; }
+    public event EventHandler OpenOutputDirClicked { add => _btnOpenOutputDir.Click += value; remove => _btnOpenOutputDir.Click -= value; }
 
     #endregion
 }

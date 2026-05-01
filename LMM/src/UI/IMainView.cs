@@ -51,4 +51,5 @@ public interface IMainView
     event EventHandler ScanTemplateClicked;
     event EventHandler RunClicked;
     event EventHandler CancelClicked;
+    event EventHandler OpenOutputDirClicked;
 }
