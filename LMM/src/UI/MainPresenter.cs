@@ -33,6 +33,7 @@ public sealed class MainPresenter
         _view.RunClicked += async (s, e) => await RunMergeAsync();
         _view.CancelClicked += (s, e) => _cts?.Cancel();
         _view.OpenOutputDirClicked += (s, e) => OpenOutputDir();
+        _view.ClearOutputDirChanged += (s, e) => UpdateState();
 
         _view.TemplatePathChanged += (s, e) => { _templateFields.Clear(); UpdateState(); };
         _view.ExcelPathChanged += (s, e) => { _templateFields.Clear(); UpdateState(); };
@@ -229,6 +230,21 @@ public sealed class MainPresenter
         {
             _view.ShowWarning("Ejecutar", "Por favor, seleccione una carpeta de salida válida.");
             return;
+        }
+
+        if (_view.ClearOutputDir)
+        {
+            try
+            {
+                _view.AppendLog("Limpiando carpeta de salida...");
+                foreach (var file in Directory.GetFiles(config.OutputDir)) File.Delete(file);
+                foreach (var dir in Directory.GetDirectories(config.OutputDir)) Directory.Delete(dir, true);
+            }
+            catch (Exception ex)
+            {
+                _view.ShowError("Limpiar carpeta", "No se pudo limpiar la carpeta de salida: " + ex.Message);
+                return;
+            }
         }
 
         _cts = new CancellationTokenSource();

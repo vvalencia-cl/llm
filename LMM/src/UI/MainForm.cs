@@ -10,6 +10,7 @@ public sealed partial class MainForm : Form, IMainView
     private FilePickerControl _fpTemplate = null!;
     private FilePickerControl _fpExcel = null!;
     private FilePickerControl _fpOutputDir = null!;
+    private CheckBox _chkClearOutputDir = null!;
     private ExcelOptionsControl _excelOptions = null!;
     private FilenameBuilderControl _filenameBuilder = null!;
     private LogPanelControl _logPanel = null!;
@@ -47,6 +48,7 @@ public sealed partial class MainForm : Form, IMainView
     public string? FilenameFirstField => _filenameBuilder.FirstField;
     public string? FilenameSecondField => _filenameBuilder.SecondField;
     public string? FilenameThirdField => _filenameBuilder.ThirdField;
+    public bool ClearOutputDir { get => _chkClearOutputDir.Checked; set => _chkClearOutputDir.Checked = value; }
 
     public void SetWorksheets(IEnumerable<string> worksheets) => _excelOptions.SetWorksheets(worksheets);
     public void SetExcelHeaders(IEnumerable<string> headers) => _filenameBuilder.SetHeaders(headers, OptionalFieldNoneOption);
@@ -75,6 +77,7 @@ public sealed partial class MainForm : Form, IMainView
         _fpExcel.Enabled = !state.IsProcessing;
         _fpTemplate.Enabled = !state.IsProcessing;
         _fpOutputDir.Enabled = !state.IsProcessing;
+        _chkClearOutputDir.Enabled = !state.IsProcessing;
     }
 
     public void ShowError(string title, string message) => MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -112,6 +115,7 @@ public sealed partial class MainForm : Form, IMainView
     public event EventHandler RunClicked { add => _btnRun.Click += value; remove => _btnRun.Click -= value; }
     public event EventHandler CancelClicked { add => _btnCancel.Click += value; remove => _btnCancel.Click -= value; }
     public event EventHandler OpenOutputDirClicked { add => _btnOpenOutputDir.Click += value; remove => _btnOpenOutputDir.Click -= value; }
+    public event EventHandler ClearOutputDirChanged { add => _chkClearOutputDir.CheckedChanged += value; remove => _chkClearOutputDir.CheckedChanged -= value; }
 
     #endregion
 }

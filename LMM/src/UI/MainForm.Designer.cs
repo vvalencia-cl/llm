@@ -77,6 +77,11 @@ partial class MainForm
         inputs.SetColumnSpan(_fpOutputDir, 2);
         r++;
 
+        // Row: Borrar contenido
+        _chkClearOutputDir = new CheckBox { Text = "Borrar contenido de Carpeta de Salida", AutoSize = true, Checked = false };
+        inputs.Controls.Add(_chkClearOutputDir, 1, r);
+        r++;
+
         // Row: Analizar
         _btnLoadExcel = new Button { Text = "Cargar Datos", AutoSize = true };
         inputs.Controls.Add(new Label { Text = "Analizar", AutoSize = true, Anchor = AnchorStyles.Left }, 0, r);

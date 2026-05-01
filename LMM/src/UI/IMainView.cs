@@ -18,6 +18,7 @@ public interface IMainView
     string? FilenameFirstField { get; }
     string? FilenameSecondField { get; }
     string? FilenameThirdField { get; }
+    bool ClearOutputDir { get; set; }
 
     // Métodos de actualización de UI
     void SetWorksheets(IEnumerable<string> worksheets);
@@ -52,4 +53,5 @@ public interface IMainView
     event EventHandler RunClicked;
     event EventHandler CancelClicked;
     event EventHandler OpenOutputDirClicked;
+    event EventHandler ClearOutputDirChanged;
 }
