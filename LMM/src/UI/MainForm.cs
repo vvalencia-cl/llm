@@ -3,44 +3,12 @@ using LMM.Domain.Dto;
 
 namespace LMM.UI;
 
-public sealed class MainForm : Form
+public sealed partial class MainForm : Form
 {
-    // UI
-    private TextBox txtTemplatePath = null!;
-    private Button btnBrowseTemplate = null!;
-
-    private TextBox txtExcelPath = null!;
-    private Button btnBrowseExcel = null!;
-    private Button btnLoadExcel = null!;
-
-    private ComboBox cmbWorksheet = null!;
-    private NumericUpDown numHeaderRow = null!;
-    private Button btnRefreshHeaders = null!;
-
-    private ComboBox cmbFirstField = null!;
-    private ComboBox cmbSecondField = null!;
-    private ComboBox cmbThirdField = null!;
-
-    private TextBox txtPrefix = null!;
-    private TextBox txtPostfix = null!;
-    private TextBox txtSeparator = null!;
-
-    private Label lblFilenamePreview = null!;
-
-    private TextBox txtOutputDir = null!;
-    private Button btnBrowseOutputDir = null!;
-
-    private Button btnScanTemplateFields = null!;
-    private Button btnRun = null!;
-    private Button btnCancel = null!;
-
-    private ProgressBar progressBar = null!;
-    private ListBox lstLog = null!;
-
     // State
     private ClosedXmlDataSourceService? _excel;
     private ExcelHeaderResult? _headerInfo;
-    private List<string> _templateFields = new();
+    private List<string> _templateFields = [];
     private Dictionary<string, string> _templateToExcelHeaderMap = new(StringComparer.Ordinal);
     private CancellationTokenSource? _cts;
 
@@ -48,15 +16,7 @@ public sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Combinación de Correspondencia (Plantilla Word + Excel → PDF)";
-        Width = 980;
-        Height = 720;
-        StartPosition = FormStartPosition.CenterScreen;
-
-        // Scale layout based on DPI (helps consistency at 150%)
-        AutoScaleMode = AutoScaleMode.Dpi;
-
-        BuildUi();
+        InitializeComponent();
         WireEvents();
         UpdateUiEnabledState();
     }
@@ -69,329 +29,99 @@ public sealed class MainForm : Form
         base.OnFormClosed(e);
     }
 
-    private void BuildUi()
+    private void WireEvents()
     {
-        var root = new TableLayoutPanel
+        btnBrowseTemplate.Click += btnBrowseTemplate_Click;
+        btnBrowseExcel.Click += btnBrowseExcel_Click;
+        btnBrowseOutputDir.Click += btnBrowseOutputDir_Click;
+        btnLoadExcel.Click += btnLoadExcel_Click;
+        btnRefreshHeaders.Click += btnRefreshHeaders_Click;
+
+        cmbWorksheet.SelectedIndexChanged += cmbWorksheet_SelectedIndexChanged;
+        numHeaderRow.ValueChanged += numHeaderRow_ValueChanged;
+
+        cmbFirstField.SelectedIndexChanged += cmbFirstField_SelectedIndexChanged;
+        cmbSecondField.SelectedIndexChanged += cmbSecondField_SelectedIndexChanged;
+        cmbThirdField.SelectedIndexChanged += cmbThirdField_SelectedIndexChanged;
+        txtPrefix.TextChanged += txtPrefix_TextChanged;
+        txtPostfix.TextChanged += txtPostfix_TextChanged;
+        txtSeparator.TextChanged += txtSeparator_TextChanged;
+        txtOutputDir.TextChanged += txtOutputDir_TextChanged;
+
+        btnScanTemplateFields.Click += btnScanTemplateFields_Click;
+        btnRun.Click += btnRun_Click;
+        btnCancel.Click += btnCancel_Click;
+
+        lstLog.KeyDown += lstLog_KeyDown;
+    }
+
+    private void btnBrowseTemplate_Click(object? sender, EventArgs e) => BrowseTemplate();
+    private void btnBrowseExcel_Click(object? sender, EventArgs e) => BrowseExcel();
+    private void btnBrowseOutputDir_Click(object? sender, EventArgs e) => BrowseOutputDir();
+
+    private async void btnLoadExcel_Click(object? sender, EventArgs e)
+    {
+        // User feedback: disable relevant controls + show wait cursor + show marquee progress
+        var prevCursor = Cursor.Current;
+        try
         {
-            Dock = DockStyle.Fill,
-            ColumnCount = 1,
-            RowCount = 3,
-            Padding = new Padding(12),
-        };
-        root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 14));
-        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            btnLoadExcel.Enabled = false;
+            btnBrowseExcel.Enabled = false;
+            txtExcelPath.Enabled = false;
 
-        Controls.Add(root);
+            progressBar.Style = ProgressBarStyle.Marquee;
+            progressBar.MarqueeAnimationSpeed = 30;
 
-        // Top panel (inputs)
-        var inputs = new TableLayoutPanel
-        {
-            Dock = DockStyle.Top,
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            ColumnCount = 4,
-            RowCount = 10,
-        };
-        inputs.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
-        inputs.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        inputs.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-        inputs.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
+            Cursor.Current = Cursors.WaitCursor;
+            AppendLog("Analizando Excel... (esto puede tardar unos segundos)");
 
-        root.Controls.Add(inputs, 0, 0);
+            await LoadExcelAsync();
 
-        // Row helper
-        var r = 0;
-
-        // Template
-        txtTemplatePath = new TextBox { PlaceholderText = "Seleccione la plantilla de Word (.docx)..." };
-        btnBrowseTemplate = new Button { Text = "Buscar..." };
-        AddRow("Plantilla Word", txtTemplatePath, btnBrowseTemplate);
-
-        // Excel
-        txtExcelPath = new TextBox { PlaceholderText = "Seleccione el origen de datos Excel (.xlsx)..." };
-        btnBrowseExcel = new Button { Text = "Buscar..." };
-
-        AddRow("Archivo Excel", txtExcelPath, btnBrowseExcel, btnLoadExcel);
-
-        btnLoadExcel = new Button { Text = "Cargar Datos" };
-        AddRow("Analizar", btnLoadExcel);
-
-        AddDivisoryLine();
-
-        // Worksheet + header row
-        cmbWorksheet = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-        numHeaderRow = new NumericUpDown { Minimum = 1, Maximum = 100000, Value = 1 };
-        btnRefreshHeaders = new Button { Text = "Refrescar columnas de Excel" };
-
-        var excelOptionsPanel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
-        excelOptionsPanel.Name = "Opciones de Excel";
-        excelOptionsPanel.Controls.Add(new Label { Text = "Hoja de Excel: ", AutoSize = true });
-        excelOptionsPanel.Controls.Add(cmbWorksheet);
-        excelOptionsPanel.Controls.Add(new Label { Text = "Nº Fila con Encabezados: ", AutoSize = true });
-        excelOptionsPanel.Controls.Add(numHeaderRow);
-        excelOptionsPanel.Controls.Add(btnRefreshHeaders);
-
-        AddRow("Opciones de Excel", excelOptionsPanel);
-
-        AddDivisoryLine();
-
-        cmbFirstField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-        cmbSecondField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-        cmbThirdField = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-
-        txtPrefix = new TextBox { PlaceholderText = "Prefijo" };
-        txtPostfix = new TextBox { PlaceholderText = "Sufijo" };
-        txtSeparator = new TextBox { PlaceholderText = "Sep.", Text = "_" };
-
-        var fieldPanel = new TableLayoutPanel { ColumnCount = 6, Dock = DockStyle.Fill, AutoSize = true };
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15)); // prefix
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25)); // first
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10)); // separator
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20)); // second
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20)); // third
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10)); // postfix
-
-        fieldPanel.Controls.Add(txtPrefix, 0, 0);
-        fieldPanel.Controls.Add(cmbFirstField, 1, 0);
-        fieldPanel.Controls.Add(txtSeparator, 2, 0);
-        fieldPanel.Controls.Add(cmbSecondField, 3, 0);
-        fieldPanel.Controls.Add(cmbThirdField, 4, 0);
-        fieldPanel.Controls.Add(txtPostfix, 5, 0);
-
-        AddRow("Nombre de archivo", fieldPanel);
-
-        // Filename preview
-        lblFilenamePreview = new Label { AutoSize = true, Text = "" };
-        AddRow("Nombre de archivo a generar", lblFilenamePreview);
-
-        // Output directory
-        txtOutputDir = new TextBox { PlaceholderText = "Seleccione la carpeta de salida..." };
-        btnBrowseOutputDir = new Button { Text = "Buscar..." };
-        AddRow("Carpeta de salida", txtOutputDir, btnBrowseOutputDir);
-
-        // Actions row
-        btnScanTemplateFields = new Button { Text = "Validar campos plantilla" };
-        btnRun = new Button { Text = "Ejecutar combinación" };
-        btnCancel = new Button { Text = "Cancelar", Enabled = false };
-
-        // Help DPI/layout: buttons size themselves correctly
-        btnScanTemplateFields.AutoSize = true;
-        btnRun.AutoSize = true;
-        btnCancel.AutoSize = true;
-
-        var actionPanel = new FlowLayoutPanel
-        {
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            WrapContents = true, // key: at 150% it may need to wrap
-            FlowDirection = FlowDirection.LeftToRight,
-            Margin = Padding.Empty,
-            Padding = Padding.Empty
-        };
-        actionPanel.Controls.Add(btnScanTemplateFields);
-        actionPanel.Controls.Add(btnRun);
-        actionPanel.Controls.Add(btnCancel);
-
-        AddRow("Acciones", actionPanel);
-
-        // Separator row
-        root.Controls.Add(new Label { Height = 2, BorderStyle = BorderStyle.Fixed3D, Dock = DockStyle.Fill }, 0, 1);
-
-        // Bottom panel (progress + log)
-        var bottom = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 1,
-            RowCount = 3
-        };
-        bottom.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 8));
-        bottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-
-        root.Controls.Add(bottom, 0, 2);
-
-        progressBar = new ProgressBar { Dock = DockStyle.Top, Height = 18 };
-        bottom.Controls.Add(progressBar, 0, 0);
-
-        bottom.Controls.Add(new Label { Height = 2 }, 0, 1);
-
-        lstLog = new ListBox { Dock = DockStyle.Fill };
-        lstLog.SelectionMode = SelectionMode.MultiExtended;
-        bottom.Controls.Add(lstLog, 0, 2);
-
-        // Add a context menu for copying selected lines
-        var logMenu = new ContextMenuStrip();
-        var miCopy = new ToolStripMenuItem("Copiar seleccionados");
-        miCopy.Click += (_, __) => CopySelectedLogLinesToClipboard();
-        logMenu.Items.Add(miCopy);
-
-        // Optional: enable/disable based on selection
-        logMenu.Opening += (_, __) => miCopy.Enabled = lstLog.SelectedItems.Count > 0;
-
-        lstLog.ContextMenuStrip = logMenu;
-
-        // Cosmético: etiquetar los desplegables mediante ToolTips
-        var tt = new ToolTip();
-        tt.SetToolTip(cmbFirstField,
-            "Primer Campo: Columna de Excel utilizada para la primera parte del nombre del PDF");
-        tt.SetToolTip(cmbSecondField,
-            "Segundo Campo: Columna de Excel utilizada para la segunda parte del nombre del PDF");
-        tt.SetToolTip(cmbThirdField,
-            "Tercer Campo (opcional): si se elige, se agrega como tercera parte del nombre del PDF");
-        return;
-
-        void AddDivisoryLine()
-        {
-            var divisoryLabel = new Label { Text = "", Height = 1, BackColor = Color.Black, Dock = DockStyle.Fill };
-            inputs.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            inputs.Controls.Add(divisoryLabel);
-            inputs.SetCellPosition(divisoryLabel, new TableLayoutPanelCellPosition(0, r));
-            inputs.SetColumnSpan(divisoryLabel, 3);
-            r++;
+            AppendLog("Excel analizado.");
         }
-
-        void AddRow(string label, Control main, Control? b1 = null, Control? b2 = null)
+        catch (Exception ex)
         {
-            inputs.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            inputs.Controls.Add(
-                new Label
-                {
-                    Text = label,
-                    AutoSize = true,
-                    Anchor = AnchorStyles.Left,
-                    Padding = new Padding(0, 6, 0, 0)
-                },
-                0, r);
+            AppendLog("Analizar Excel: ERROR -> " + ex.Message);
+            MessageBox.Show(ex.Message, "Error al analizar Excel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        finally
+        {
+            progressBar.MarqueeAnimationSpeed = 0;
+            progressBar.Style = ProgressBarStyle.Blocks;
 
-            // DPI-friendly layout:
-            // - Inputs: Fill
-            // - Buttons: AutoSize (avoid clipped height)
-            // - FlowLayoutPanel: Dock=Fill so it gets full width (and can wrap); keep AutoSize for height
-            if (main is FlowLayoutPanel flp)
-            {
-                flp.AutoSize = true;
-                flp.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-                flp.Dock = DockStyle.Fill;
-            }
-            else if (main is Button)
-            {
-                main.AutoSize = true;
-                main.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            }
-            else
-            {
-                main.Dock = DockStyle.Fill;
-            }
+            Cursor.Current = prevCursor;
 
-            inputs.Controls.Add(main, 1, r);
-
-            if (b1 != null)
-            {
-                if (b1 is Button)
-                {
-                    b1.AutoSize = true;
-                    b1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-                }
-                else
-                {
-                    b1.Dock = DockStyle.Fill;
-                }
-
-                inputs.Controls.Add(b1, 2, r);
-            }
-
-            if (b2 != null)
-            {
-                if (b2 is Button)
-                {
-                    b2.AutoSize = true;
-                    b2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-                }
-                else
-                {
-                    b2.Dock = DockStyle.Fill;
-                }
-
-                inputs.Controls.Add(b2, 3, r);
-            }
-
-            r++;
+            // Re-evaluate enabled state based on current app state
+            txtExcelPath.Enabled = true;
+            btnBrowseExcel.Enabled = true;
+            UpdateUiEnabledState();
         }
     }
 
-    private void WireEvents()
+    private void btnRefreshHeaders_Click(object? sender, EventArgs e) => RefreshHeaders();
+    private void cmbWorksheet_SelectedIndexChanged(object? sender, EventArgs e) => RefreshHeaders();
+    private void numHeaderRow_ValueChanged(object? sender, EventArgs e) => RefreshHeaders();
+
+    private void cmbFirstField_SelectedIndexChanged(object? sender, EventArgs e) => UpdateFilenamePreview();
+    private void cmbSecondField_SelectedIndexChanged(object? sender, EventArgs e) => UpdateFilenamePreview();
+    private void cmbThirdField_SelectedIndexChanged(object? sender, EventArgs e) => UpdateFilenamePreview();
+    private void txtPrefix_TextChanged(object? sender, EventArgs e) => UpdateFilenamePreview();
+    private void txtPostfix_TextChanged(object? sender, EventArgs e) => UpdateFilenamePreview();
+    private void txtSeparator_TextChanged(object? sender, EventArgs e) => UpdateFilenamePreview();
+    private void txtOutputDir_TextChanged(object? sender, EventArgs e) => UpdateFilenamePreview();
+
+    private void btnScanTemplateFields_Click(object? sender, EventArgs e) => ScanTemplateAndValidate();
+    private async void btnRun_Click(object? sender, EventArgs e) => await RunMergeAsync();
+    private void btnCancel_Click(object? sender, EventArgs e) => _cts?.Cancel();
+
+    private void lstLog_KeyDown(object? sender, KeyEventArgs e)
     {
-        btnBrowseTemplate.Click += (_, __) => BrowseTemplate();
-        btnBrowseExcel.Click += (_, __) => BrowseExcel();
-        btnBrowseOutputDir.Click += (_, __) => BrowseOutputDir();
-
-        btnLoadExcel.Click += async (_, __) =>
+        if (e.Control && e.KeyCode == Keys.C)
         {
-            // User feedback: disable relevant controls + show wait cursor + show marquee progress
-            var prevCursor = Cursor.Current;
-            try
-            {
-                btnLoadExcel.Enabled = false;
-                btnBrowseExcel.Enabled = false;
-                txtExcelPath.Enabled = false;
-
-                progressBar.Style = ProgressBarStyle.Marquee;
-                progressBar.MarqueeAnimationSpeed = 30;
-
-                Cursor.Current = Cursors.WaitCursor;
-                AppendLog("Analizando Excel... (esto puede tardar unos segundos)");
-
-                await LoadExcelAsync();
-
-                AppendLog("Excel analizado.");
-            }
-            catch (Exception ex)
-            {
-                AppendLog("Analizar Excel: ERROR -> " + ex.Message);
-                MessageBox.Show(ex.Message, "Error al analizar Excel", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                progressBar.MarqueeAnimationSpeed = 0;
-                progressBar.Style = ProgressBarStyle.Blocks;
-
-                Cursor.Current = prevCursor;
-
-                // Re-evaluate enabled state based on current app state
-                txtExcelPath.Enabled = true;
-                btnBrowseExcel.Enabled = true;
-                UpdateUiEnabledState();
-            }
-        };
-
-        btnRefreshHeaders.Click += (_, __) => RefreshHeaders();
-
-        cmbWorksheet.SelectedIndexChanged += (_, __) => RefreshHeaders();
-        numHeaderRow.ValueChanged += (_, __) => RefreshHeaders();
-
-        cmbFirstField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
-        cmbSecondField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
-        cmbThirdField.SelectedIndexChanged += (_, __) => UpdateFilenamePreview();
-        txtPrefix.TextChanged += (_, __) => UpdateFilenamePreview();
-        txtPostfix.TextChanged += (_, __) => UpdateFilenamePreview();
-        txtSeparator.TextChanged += (_, __) => UpdateFilenamePreview();
-        txtOutputDir.TextChanged += (_, __) => UpdateFilenamePreview();
-
-        btnScanTemplateFields.Click += (_, __) => ScanTemplateAndValidate();
-        btnRun.Click += async (_, __) => await RunMergeAsync();
-        btnCancel.Click += (_, __) => _cts?.Cancel();
-
-        // Allow Ctrl+C to copy selected log lines
-        lstLog.KeyDown += (_, e) =>
-        {
-            if (e.Control && e.KeyCode == Keys.C)
-            {
-                CopySelectedLogLinesToClipboard();
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-            }
-        };
+            CopySelectedLogLinesToClipboard();
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
     }
 
     private void CopySelectedLogLinesToClipboard()
