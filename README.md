@@ -31,6 +31,18 @@ Para generar el ejecutable de la aplicación, el proyecto incluye un script de a
 3. El ejecutable y sus dependencias se generarán en la carpeta:
    `LMM\bin\Release\net10.0-windows\win-x64\publish`
 
+## Pruebas Unitarias
+
+El proyecto incluye un conjunto de pruebas unitarias para validar la lógica de negocio en el espacio de nombres `LMM.Application`.
+
+Para ejecutar las pruebas:
+
+1. Abra una terminal en la raíz del proyecto.
+2. Ejecute el siguiente comando:
+   ```cmd
+   dotnet test
+   ```
+
 ---
 
 *Desarrollado para facilitar la creación de documentos personalizados de forma rápida y eficiente.*
