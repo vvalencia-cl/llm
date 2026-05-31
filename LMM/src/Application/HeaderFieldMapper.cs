@@ -4,7 +4,6 @@ namespace LMM.Application;
 
 public static class HeaderFieldMapper
 {
-
     // Case-sensitive normalization:
     // - Trim
     // - Remove % and :
@@ -161,28 +160,28 @@ public static class HeaderFieldMapper
         if (!lookup.TryGetValue(normalizedField, out var candidates))
             return false;
 
-        if (candidates.Count == 1)
+        if (candidates.Count != 1)
         {
-            excelHeader = candidates[0];
-            return true;
+            // Ambiguous mapping: more than one Excel header normalizes to the same key
+            throw new InvalidOperationException(
+                $"Encabezados de Excel ambiguos para el campo de plantilla '{originalTemplateField}'. " +
+                $"Múltiples encabezados de Excel coinciden tras la normalización ('{normalizedField}'): {string.Join(", ", candidates)}");
         }
 
-        // Ambiguous mapping: more than one Excel header normalizes to the same key
-        throw new InvalidOperationException(
-            $"Encabezados de Excel ambiguos para el campo de plantilla '{originalTemplateField}'. " +
-            $"Múltiples encabezados de Excel coinciden tras la normalización ('{normalizedField}'): {string.Join(", ", candidates)}");
+        excelHeader = candidates[0];
+        return true;
     }
 
     /// <summary>
     /// Builds values keyed by TEMPLATE field names, using the mapping to pull from the Excel record.
     /// Missing values become "".
     /// </summary>
-    public static Dictionary<string, string> BuildTemplateValuesForRecord(
+    public static Dictionary<string, string?> BuildTemplateValuesForRecord(
         IReadOnlyList<string> templateFields,
         Dictionary<string, string> excelRecord,
         Dictionary<string, string> templateToExcelHeaderMap)
     {
-        var values = new Dictionary<string, string>(StringComparer.Ordinal);
+        var values = new Dictionary<string, string?>(StringComparer.Ordinal);
 
         foreach (var field in templateFields)
         {
@@ -195,5 +194,4 @@ public static class HeaderFieldMapper
 
         return values;
     }
-
 }

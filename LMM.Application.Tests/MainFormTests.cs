@@ -3,10 +3,7 @@ using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using LMM.Application;
 using LMM.UI;
-using LMM.Domain.Dto;
-using Xunit;
 
 namespace LMM.Application.Tests;
 
@@ -20,7 +17,7 @@ public class MainFormTests : IDisposable
     public MainFormTests()
     {
         // Try to find project root by looking for LMM.slnx
-        string root = AppDomain.CurrentDomain.BaseDirectory;
+        string? root = AppDomain.CurrentDomain.BaseDirectory;
         while (root != null && !File.Exists(Path.Combine(root, "LMM.slnx")))
         {
             root = Path.GetDirectoryName(root);
@@ -217,6 +214,7 @@ public class MainFormTests : IDisposable
         public string? PickFile(string title, string filter) => null;
         public string? PickFolder(string title) => null;
 
+#pragma warning disable CS0067
         public event EventHandler? TemplatePathChanged;
         public event EventHandler? ExcelPathChanged;
         public event EventHandler? OutputDirChanged;
@@ -232,6 +230,7 @@ public class MainFormTests : IDisposable
         public event EventHandler? CancelClicked;
         public event EventHandler? OpenOutputDirClicked;
         public event EventHandler? ClearOutputDirChanged;
+#pragma warning restore CS0067
 
         public void TriggerLoadExcel() => LoadExcelClicked?.Invoke(this, EventArgs.Empty);
         public void TriggerScanTemplate() => ScanTemplateClicked?.Invoke(this, EventArgs.Empty);

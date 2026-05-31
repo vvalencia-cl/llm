@@ -5,7 +5,7 @@ namespace LMM.Application;
 public static class MailMergeToPdf
 {
     public static void MergeAndExportPdfForRecord(
-        Dictionary<string, string> record,
+        IReadOnlyDictionary<string, string?> record,
         string pdfPath,
         string templateDocxPath,
         WordPdfExporter wordExporter)

@@ -1,7 +1,6 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using LMM.Application;
 
 namespace LMM.Application.Tests;
 
@@ -40,7 +39,7 @@ public class OpenXmlMailMergeTests
         stream.Position = 0;
         using (var doc = WordprocessingDocument.Open(stream, false))
         {
-            var body = doc.MainDocumentPart!.Document.Body!;
+            var body = doc.MainDocumentPart!.Document!.Body!;
             var text = body.InnerText;
             Assert.Equal("Hello World!", text);
         }
@@ -50,6 +49,7 @@ public class OpenXmlMailMergeTests
     public void ReplaceMergeFieldsInMainBody_InvalidDoc_ThrowsArgumentException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => OpenXmlMailMerge.ReplaceMergeFieldsInMainBody(null!, new Dictionary<string, string?>()));
+        Assert.Throws<ArgumentException>(() =>
+            OpenXmlMailMerge.ReplaceMergeFieldsInMainBody(null!, new Dictionary<string, string?>()));
     }
 }
