@@ -171,12 +171,13 @@ public class MainFormTests : IDisposable
         Assert.Contains(pdfFiles, f => Path.GetFileName(f) == "Employee 10.pdf");
 
         // Verify that Word processes were cleaned up (best effort)
-        // Actually we can't easily check that without counting processes, 
+        // Actually, we can't easily check that without counting processes, 
         // but the fact it finished means WordPdfExporter.Dispose was likely called.
     }
 
     private class MockMainView : IMainView
     {
+        public string WindowTitle { get; set; } = "";
         public string TemplatePath { get; set; } = "";
         public string ExcelPath { get; set; } = "";
         public string OutputDir { get; set; } = "";

@@ -7,6 +7,10 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Description>Herramienta de combinación de correspondencia Word + Excel a PDF.</Description>
+    <Copyright>Copyright © 2026</Copyright>
     <NoWarn>$(NoWarn);WFO1000</NoWarn>
   </PropertyGroup>
 

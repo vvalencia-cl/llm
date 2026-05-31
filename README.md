@@ -29,7 +29,7 @@ Para generar el ejecutable de la aplicación, el proyecto incluye un script de a
    ```cmd
    publish-win-x64.cmd
    ```
-3. El ejecutable se generará en: `LMM\bin\Release\net10.0-windows\win-x64\publish\LMM.exe`.
+3. El ejecutable se generará en: `LMM\bin\Release\net10.0-windows\win-x64\publish\LMM_1.0.0.exe` (el nombre incluirá la versión actual).
 
 ### Proceso de Release recomendado
 1. **Incrementar versión**: Actualice la versión en `LMM.csproj` (ej. `<Version>1.1.0</Version>`).

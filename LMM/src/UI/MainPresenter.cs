@@ -20,6 +20,14 @@ public sealed class MainPresenter
         _view = view;
         WireEvents();
         UpdateState();
+        SetTitle();
+    }
+
+    private void SetTitle()
+    {
+        var version = typeof(MainPresenter).Assembly.GetName().Version;
+        var versionStr = version != null ? $"{version.Major}.{version.Minor}.{version.Build}" : "1.0.0";
+        _view.WindowTitle = $"LMM - Combinación de correspondencia (v{versionStr})";
     }
 
     private void WireEvents()

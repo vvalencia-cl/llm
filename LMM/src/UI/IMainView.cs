@@ -4,6 +4,8 @@ namespace LMM.UI;
 
 public interface IMainView
 {
+    string WindowTitle { set; }
+
     // Propiedades de datos
     string TemplatePath { get; set; }
     string ExcelPath { get; set; }

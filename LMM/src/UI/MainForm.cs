@@ -76,6 +76,7 @@ public sealed partial class MainForm : Form, IMainView
 
     #region IMainView Implementation
 
+    public string WindowTitle { set => Text = value; }
     public string TemplatePath { get => _fpTemplate.SelectedPath; set => _fpTemplate.SelectedPath = value; }
     public string ExcelPath { get => _fpExcel.SelectedPath; set => _fpExcel.SelectedPath = value; }
     public string OutputDir { get => _fpOutputDir.SelectedPath; set => _fpOutputDir.SelectedPath = value; }
