@@ -2,7 +2,6 @@
 
 public partial class LogPanelControl : UserControl
 {
-    private ProgressBar _progressBar = null!;
     private ListBox _lstLog = null!;
 
     public LogPanelControl()
@@ -12,14 +11,6 @@ public partial class LogPanelControl : UserControl
 
     private void InitializeComponent()
     {
-        var mainPanel = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3, Padding = new Padding(0) };
-        mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        mainPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10)); // Spacer
-        mainPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-
-        _progressBar = new ProgressBar { Dock = DockStyle.Top, Height = 22, Style = ProgressBarStyle.Blocks };
-        mainPanel.Controls.Add(_progressBar, 0, 0);
-
         _lstLog = new ListBox 
         { 
             Dock = DockStyle.Fill, 
@@ -27,7 +18,6 @@ public partial class LogPanelControl : UserControl
             BorderStyle = BorderStyle.FixedSingle,
             Font = new Font("Consolas", 9F) // Monospaced font for logs
         };
-        mainPanel.Controls.Add(_lstLog, 0, 2);
 
         var miCopy = new ToolStripMenuItem("Copiar seleccionados");
         miCopy.Click += (s, e) => CopySelected();
@@ -46,7 +36,7 @@ public partial class LogPanelControl : UserControl
             }
         };
 
-        this.Controls.Add(mainPanel);
+        this.Controls.Add(_lstLog);
     }
 
     public void AppendLog(string message)
@@ -58,28 +48,6 @@ public partial class LogPanelControl : UserControl
         }
         _lstLog.Items.Add(message);
         _lstLog.TopIndex = Math.Max(0, _lstLog.Items.Count - 1);
-    }
-
-    public void SetProgress(int value, int maximum)
-    {
-        if (InvokeRequired)
-        {
-            Invoke(() => SetProgress(value, maximum));
-            return;
-        }
-        _progressBar.Maximum = Math.Max(1, maximum);
-        _progressBar.Value = Math.Min(_progressBar.Maximum, Math.Max(0, value));
-    }
-
-    public void SetMarquee(bool active)
-    {
-        if (InvokeRequired)
-        {
-            Invoke(() => SetMarquee(active));
-            return;
-        }
-        _progressBar.Style = active ? ProgressBarStyle.Marquee : ProgressBarStyle.Blocks;
-        _progressBar.MarqueeAnimationSpeed = active ? 30 : 0;
     }
 
     private void CopySelected()

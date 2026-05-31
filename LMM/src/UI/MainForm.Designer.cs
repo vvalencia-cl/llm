@@ -44,9 +44,10 @@ partial class MainForm
         // 
         // root
         // 
-        root = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2, Padding = new Padding(15) };
+        root = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3, Padding = new Padding(15) };
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
         // 
         // inputs container
@@ -113,7 +114,7 @@ partial class MainForm
         _btnScan = new Button { Text = "Validar Plantilla", AutoSize = true, Padding = new Padding(10, 5, 10, 5) };
         _btnRun = new Button { Text = "Ejecutar Combinación", AutoSize = true, Padding = new Padding(10, 5, 10, 5), Font = new Font(DefaultFont, FontStyle.Bold) };
         _btnCancel = new Button { Text = "Cancelar", Enabled = false, AutoSize = true, Padding = new Padding(10, 5, 10, 5) };
-        _btnOpenOutputDir = new Button { Text = "Ver Resultados", Enabled = false, AutoSize = true, Padding = new Padding(10, 5, 10, 5) };
+        _btnOpenOutputDir = new Button { Text = "Abrir Carpeta de Salida", Enabled = false, AutoSize = true, Padding = new Padding(10, 5, 10, 5) };
 
         actionPanel.Controls.Add(_btnScan);
         actionPanel.Controls.Add(_btnRun);
@@ -121,8 +122,25 @@ partial class MainForm
         actionPanel.Controls.Add(_btnOpenOutputDir);
 
         // --- Bottom: Log ---
-        _logPanel = new LogPanelControl { Dock = DockStyle.Fill, Margin = new Padding(0, 15, 0, 0) };
-        root.Controls.Add(_logPanel, 0, 1);
+        _grpLog = new GroupBox { Text = "Detalles", Dock = DockStyle.Fill, Margin = new Padding(0, 15, 0, 0), AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink };
+        _btnToggleLog = new Button 
+        { 
+            Text = "[+]", 
+            Size = new Size(30, 18), 
+            Location = new Point(65, 0), 
+            FlatStyle = FlatStyle.Flat,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Padding = new Padding(0)
+        };
+        _btnToggleLog.FlatAppearance.BorderSize = 0;
+        _grpLog.Controls.Add(_btnToggleLog);
+
+        _logPanel = new LogPanelControl { Dock = DockStyle.Fill, Padding = new Padding(0, 5, 0, 0) };
+        _grpLog.Controls.Add(_logPanel);
+        root.Controls.Add(_grpLog, 0, 1);
+
+        _progressBar = new ProgressBar { Dock = DockStyle.Fill, Height = 22, Style = ProgressBarStyle.Blocks, Margin = new Padding(0, 10, 0, 0) };
+        root.Controls.Add(_progressBar, 0, 2);
 
         // MainForm
         AutoScaleDimensions = new SizeF(96F, 96F);
