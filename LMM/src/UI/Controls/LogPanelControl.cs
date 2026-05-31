@@ -12,15 +12,22 @@ public partial class LogPanelControl : UserControl
 
     private void InitializeComponent()
     {
-        var mainPanel = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2 };
+        var mainPanel = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3, Padding = new Padding(0) };
         mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        mainPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 10)); // Spacer
         mainPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
-        _progressBar = new ProgressBar { Dock = DockStyle.Top, Height = 18 };
+        _progressBar = new ProgressBar { Dock = DockStyle.Top, Height = 22, Style = ProgressBarStyle.Blocks };
         mainPanel.Controls.Add(_progressBar, 0, 0);
 
-        _lstLog = new ListBox { Dock = DockStyle.Fill, SelectionMode = SelectionMode.MultiExtended };
-        mainPanel.Controls.Add(_lstLog, 0, 1);
+        _lstLog = new ListBox 
+        { 
+            Dock = DockStyle.Fill, 
+            SelectionMode = SelectionMode.MultiExtended,
+            BorderStyle = BorderStyle.FixedSingle,
+            Font = new Font("Consolas", 9F) // Monospaced font for logs
+        };
+        mainPanel.Controls.Add(_lstLog, 0, 2);
 
         var miCopy = new ToolStripMenuItem("Copiar seleccionados");
         miCopy.Click += (s, e) => CopySelected();

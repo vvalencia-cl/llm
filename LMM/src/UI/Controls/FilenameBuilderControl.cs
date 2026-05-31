@@ -26,31 +26,25 @@ public partial class FilenameBuilderControl : UserControl
 
     private void InitializeComponent()
     {
-        var mainPanel = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2, AutoSize = true };
+        var mainPanel = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2, AutoSize = true, Padding = new Padding(0) };
         
-        var fieldPanel = new TableLayoutPanel { ColumnCount = 6, Dock = DockStyle.Fill, AutoSize = true };
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15)); 
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25)); 
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10)); 
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20)); 
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20)); 
-        fieldPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10));
+        var fieldPanel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true, Padding = new Padding(0) };
 
-        _txtPrefix = new TextBox { PlaceholderText = "Prefijo", Dock = DockStyle.Fill };
-        _cmbFirst = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Dock = DockStyle.Fill };
-        _txtSeparator = new TextBox { PlaceholderText = "Sep.", Text = "_", Dock = DockStyle.Fill };
-        _cmbSecond = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Dock = DockStyle.Fill };
-        _cmbThird = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Dock = DockStyle.Fill };
-        _txtPostfix = new TextBox { PlaceholderText = "Sufijo", Dock = DockStyle.Fill };
+        _txtPrefix = new TextBox { PlaceholderText = "Prefijo", Width = 80, Margin = new Padding(0, 0, 5, 0) };
+        _cmbFirst = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 120, Margin = new Padding(0, 0, 5, 0) };
+        _txtSeparator = new TextBox { PlaceholderText = "Sep.", Text = "_", Width = 30, Margin = new Padding(0, 0, 5, 0) };
+        _cmbSecond = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 120, Margin = new Padding(0, 0, 5, 0) };
+        _cmbThird = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 120, Margin = new Padding(0, 0, 5, 0) };
+        _txtPostfix = new TextBox { PlaceholderText = "Sufijo", Width = 80, Margin = new Padding(0, 0, 0, 0) };
 
-        fieldPanel.Controls.Add(_txtPrefix, 0, 0);
-        fieldPanel.Controls.Add(_cmbFirst, 1, 0);
-        fieldPanel.Controls.Add(_txtSeparator, 2, 0);
-        fieldPanel.Controls.Add(_cmbSecond, 3, 0);
-        fieldPanel.Controls.Add(_cmbThird, 4, 0);
-        fieldPanel.Controls.Add(_txtPostfix, 5, 0);
+        fieldPanel.Controls.Add(_txtPrefix);
+        fieldPanel.Controls.Add(_cmbFirst);
+        fieldPanel.Controls.Add(_txtSeparator);
+        fieldPanel.Controls.Add(_cmbSecond);
+        fieldPanel.Controls.Add(_cmbThird);
+        fieldPanel.Controls.Add(_txtPostfix);
 
-        _lblPreview = new Label { Text = "", AutoSize = true, Font = new Font(this.Font, FontStyle.Italic) };
+        _lblPreview = new Label { Text = "", AutoSize = true, Font = new Font(this.Font, FontStyle.Italic), Margin = new Padding(0, 5, 0, 0) };
         
         mainPanel.Controls.Add(fieldPanel, 0, 0);
         mainPanel.Controls.Add(_lblPreview, 0, 1);

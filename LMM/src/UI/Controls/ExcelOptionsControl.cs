@@ -28,17 +28,23 @@ public partial class ExcelOptionsControl : UserControl
 
     private void InitializeComponent()
     {
-        var panel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
+        var panel = new FlowLayoutPanel 
+        { 
+            Dock = DockStyle.Fill, 
+            AutoSize = true, 
+            WrapContents = true,
+            Padding = new Padding(0)
+        };
         
-        panel.Controls.Add(new Label { Text = "Hoja de Excel: ", AutoSize = true, Anchor = AnchorStyles.Left });
-        _cmbWorksheet = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+        panel.Controls.Add(new Label { Text = "Hoja:", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(0, 0, 5, 0) });
+        _cmbWorksheet = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 150 };
         panel.Controls.Add(_cmbWorksheet);
 
-        panel.Controls.Add(new Label { Text = "Nº Fila con Encabezados: ", AutoSize = true, Anchor = AnchorStyles.Left });
-        _numHeaderRow = new NumericUpDown { Minimum = 1, Maximum = 100000, Value = 1 };
+        panel.Controls.Add(new Label { Text = "Fila Encabezados:", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(15, 0, 5, 0) });
+        _numHeaderRow = new NumericUpDown { Minimum = 1, Maximum = 100000, Value = 1, Width = 60 };
         panel.Controls.Add(_numHeaderRow);
 
-        _btnRefresh = new Button { Text = "Refrescar columnas de Excel", AutoSize = true };
+        _btnRefresh = new Button { Text = "Refrescar", AutoSize = true, Margin = new Padding(15, 0, 0, 0) };
         panel.Controls.Add(_btnRefresh);
 
         _cmbWorksheet.SelectedIndexChanged += (s, e) => OptionsChanged?.Invoke(this, EventArgs.Empty);

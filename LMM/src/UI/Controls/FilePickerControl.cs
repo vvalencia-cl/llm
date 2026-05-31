@@ -4,18 +4,10 @@ namespace LMM.UI.Controls;
 
 public partial class FilePickerControl : UserControl
 {
-    private Label _label = null!;
     private TextBox _textBox = null!;
     private Button _button = null!;
 
     public event EventHandler? FileSelected;
-
-    [Category("Appearance")]
-    public string LabelText
-    {
-        get => _label.Text;
-        set => _label.Text = value;
-    }
 
     [Category("Appearance")]
     public string PlaceholderText
@@ -38,23 +30,20 @@ public partial class FilePickerControl : UserControl
 
     private void InitializeComponent()
     {
-        _label = new Label { Dock = DockStyle.Left, AutoSize = true, TextAlign = ContentAlignment.MiddleLeft, Padding = new Padding(0, 0, 10, 0) };
         _textBox = new TextBox { Dock = DockStyle.Fill };
-        _button = new Button { Dock = DockStyle.Right, Text = "Buscar...", AutoSize = true };
+        _button = new Button { Dock = DockStyle.Right, Text = "Buscar...", AutoSize = true, Margin = new Padding(5, 0, 0, 0) };
 
         _button.Click += (s, e) => OnBrowse();
         _textBox.TextChanged += (s, e) => FileSelected?.Invoke(this, EventArgs.Empty);
 
         this.Controls.Add(_textBox);
-        this.Controls.Add(_label);
         this.Controls.Add(_button);
         this.Height = _textBox.Height;
+        this.Padding = new Padding(0);
     }
 
     protected virtual void OnBrowse()
     {
-        // Esto se sobrecargará o se usará un delegado si queremos hacerlo genérico, 
-        // pero para simplificar, el Presenter dirá qué hacer.
         BrowseClicked?.Invoke(this, EventArgs.Empty);
     }
 
