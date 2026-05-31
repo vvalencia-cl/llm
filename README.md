@@ -19,17 +19,58 @@ Este proyecto es una aplicación de escritorio para Windows desarrollada en **C#
 - **Microsoft Word**: Es necesario tener instalado Word en el sistema, ya que la aplicación utiliza Interop para la exportación precisa a PDF.
 - **Windows**: Compatible con .NET 10.0 en Windows.
 
-## Publicación
+## Publicación y Release
 
-Para generar el ejecutable de la aplicación, el proyecto incluye un script de automatización.
+Para generar el ejecutable de la aplicación, el proyecto incluye un script de automatización que crea un binario único (Self-contained, Single File) para Windows x64.
 
+### Generar ejecutable
 1. Abra una terminal en la raíz del proyecto.
 2. Ejecute el siguiente comando:
    ```cmd
    publish-win-x64.cmd
    ```
-3. El ejecutable y sus dependencias se generarán en la carpeta:
-   `LMM\bin\Release\net10.0-windows\win-x64\publish`
+3. El ejecutable se generará en: `LMM\bin\Release\net10.0-windows\win-x64\publish\LMM.exe`.
+
+### Proceso de Release recomendado
+1. **Incrementar versión**: Actualice la versión en `LMM.csproj` (ej. `<Version>1.1.0</Version>`).
+2. **Pruebas**: Ejecute `dotnet test` para asegurar que todo funciona.
+3. **Publicar**: Ejecute el script de publicación.
+4. **Etiquetar**: Cree un tag en Git (ej. `git tag -a v1.1.0 -m "Release v1.1.0"`) y súbalo al repositorio.
+
+---
+
+## Git Flow
+
+Este proyecto es totalmente compatible con el modelo de ramificación **Git Flow**. Se recomienda su uso para mantener un desarrollo organizado.
+
+### Configuración inicial
+Si tiene Git Flow instalado, inicialícelo en el proyecto:
+```bash
+git flow init
+```
+*(Se recomienda usar `master` como rama de producción y `develop` como rama de desarrollo).*
+
+### Flujo de trabajo común
+- **Nuevas funcionalidades**: 
+  ```bash
+  git flow feature start nombre-de-la-feature
+  # ... desarrollar ...
+  git flow feature finish nombre-de-la-feature
+  ```
+- **Preparar un release**:
+  ```bash
+  git flow release start 1.1.0
+  # ... ajustes finales, actualizar versión en .csproj ...
+  git flow release finish 1.1.0
+  ```
+- **Correcciones urgentes (Hotfix)**:
+  ```bash
+  git flow hotfix start fix-error-grave
+  # ... corregir ...
+  git flow hotfix finish fix-error-grave
+  ```
+
+---
 
 ## Pruebas Unitarias
 
